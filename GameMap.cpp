@@ -6,7 +6,7 @@
 #include <iostream>
 
 //This will be one of the maze maps for the game
-//This indicates where the slab object to be placed and its type
+//This indicates where the slab object to be placed with its type
 int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1, 1, 1},
@@ -38,8 +38,11 @@ int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 
 GameMap::GameMap() {
 	
-	//initialize the game map buffer
+	//initialize the game map buffer with black pixels
 	gamemapBuffer = (uint32_t*)malloc(HEIGHT * WIDTH * 4);
+	for (int i = 0; i < HEIGHT; i++)
+		for (int j = 0; j < WIDTH; j++)
+			gamemapBuffer[WIDTH * i + j] = 0x000000;
 
 	//initialize the game map with MAZE_1
 	map = new Matter ** [MAP_HEIGHT];
@@ -72,42 +75,7 @@ GameMap::GameMap() {
 	playerPos.Y = 20;
 	map[playerPos.Y][playerPos.X] = new Player();
 	
-
-
-	//initialize the game map buffer based from the initialized game map array
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-
-		for (int j = 0; j < MAP_WIDTH; j++) {
-
-			if (map[i][j]) {
-
-				uint32_t* sprite_mat = map[i][j]->getSprite();
-
-				for (int k = 0; k < 20; k++) {
-
-					for (int l = 0; l < 20; l++) {
-
-						gamemapBuffer[WIDTH * ((i * 20) + k) + ((j * 20) + l)] = sprite_mat[20 * k + l];
-
-					}
-				}
-
-			}
-			else {
-
-				//for the null
-				for (int k = 0; k < 20; k++) {
-
-					for (int l = 0; l < 20; l++) {
-
-						gamemapBuffer[WIDTH * ((i * 20) + k) + ((j * 20) + l)] =0x000000;
-
-					}
-				}
-			}
-
-		}
-	}
+	updateBuffer();
 
 }
 
@@ -128,19 +96,33 @@ void GameMap::movePlayer(Direction to) {
 			//this will move the player in game map array
 			map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
-
 			
-			for (int i = 0; i < 20; i++) {
-
-				for (int j = 0; j < 20; j++) {
-
-					gamemapBuffer[ (WIDTH * ( ( (playerPos.Y + 1) * 20) + i)) + ((playerPos.X * 20) + j)] = sprite_mat[20 * i + j];
-					gamemapBuffer[(WIDTH * (((playerPos.Y) * 20) + i)) + ((playerPos.X * 20) + j)] = 0x000000;
-				}
-			}
-
 			//update the player postion
 			playerPos.Y = playerPos.Y + 1;
+			
+			//update the buffer
+			//this will get the surroundings of the character (distance is 2 blocks)
+			updateBuffer();
+
+			//delete the upper portion
+			if (playerPos.Y - 3 >= 0) {
+
+				for (int i = 0; i < 5; i++) {
+
+					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = 0x000000;
+
+							}
+						}
+					}
+
+				}
+			}
+			
 			
 		}
 
@@ -157,18 +139,34 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y - 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
+			//update the player postion
+			playerPos.Y = playerPos.Y - 1;
 
-			for (int i = 0; i < 20; i++) {
+			//update the buffer
+			//this will get the surroundings of the character (distance is 2 blocks)
+			updateBuffer();
 
-				for (int j = 0; j < 20; j++) {
+			//delete the lower portion
+			if (playerPos.Y + 3 < MAP_HEIGHT) {
 
-					gamemapBuffer[(WIDTH * (((playerPos.Y - 1) * 20) + i)) + ((playerPos.X * 20) + j)] = sprite_mat[20 * i + j];
-					gamemapBuffer[(WIDTH * (((playerPos.Y) * 20) + i)) + ((playerPos.X * 20) + j)] = 0x000000;
+				for (int i = 0; i < 5; i++) {
+
+					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
+
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = 0x000000;
+
+							}
+						}
+					}
+
 				}
 			}
 
-			//update the player postion
-			playerPos.Y = playerPos.Y - 1;
+			
 		}
 
 	}
@@ -184,18 +182,33 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X + 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			
-			for (int i = 0; i < 20; i++) {
-
-				for (int j = 0; j < 20; j++) {
-
-					gamemapBuffer[(WIDTH * ((playerPos.Y * 20) + i)) + (( (playerPos.X + 1) * 20) + j)] = sprite_mat[20 * i + j];
-					gamemapBuffer[(WIDTH * (((playerPos.Y) * 20) + i)) + ((playerPos.X * 20) + j)] = 0x000000;
-				}
-			}
-
 			//update the player postion
 			playerPos.X = playerPos.X + 1;
+
+			//update the buffer
+			//this will get the surroundings of the character (distance is 2 blocks)
+			updateBuffer();
+
+			//delete the left portion
+			if (playerPos.X - 3 >= 0) {
+
+				for (int y = 0; y < 5; y++) {
+
+					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
+
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X - 3) * 20) + l)] = 0x000000;
+
+							}
+						}
+					}
+
+				}
+
+			}
 
 
 		}
@@ -214,22 +227,85 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X - 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-
-			for (int i = 0; i < 20; i++) {
-
-				for (int j = 0; j < 20; j++) {
-
-					gamemapBuffer[(WIDTH * ((playerPos.Y * 20) + i)) + (((playerPos.X - 1) * 20) + j)] = sprite_mat[20 * i + j];
-					gamemapBuffer[(WIDTH * (((playerPos.Y) * 20) + i)) + ((playerPos.X * 20) + j)] = 0x000000;
-				}
-			}
-
-
 			//update the player postion
 			playerPos.X = playerPos.X - 1;
+
+			//update the buffer
+			updateBuffer();
+
+			//delete the rightmost part
+			if (playerPos.X + 3 >= 0) {
+
+				for (int y = 0; y < 5; y++) {
+
+					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
+
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X + 3) * 20) + l)] = 0x000000;
+
+							}
+						}
+					}
+					
+				}
+
+			}
 
 		}
 
 	}
 
+}
+
+void GameMap::updateBuffer() {
+
+	for (int i = 0; i < 5; i++) {
+
+
+		if ((playerPos.Y - 2) + i >= 0 and (playerPos.Y - 2) + i < MAP_HEIGHT) {
+
+			for (int j = 0; j < 5; j++) {
+
+				if ((playerPos.X - 2) + j >= 0 and (playerPos.X - 2) + j < MAP_WIDTH) {
+
+					if (map[(playerPos.Y - 2) + i][(playerPos.X - 2) + j]) {
+						//put the sprite in the buffer if there is an object on it
+
+						uint32_t* sprite_mat = map[(playerPos.Y - 2) + i][(playerPos.X - 2) + j]->getSprite();
+
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = sprite_mat[20 * k + l];
+
+							}
+						}
+
+					}
+					else {
+
+						//for the null
+						for (int k = 0; k < 20; k++) {
+
+							for (int l = 0; l < 20; l++) {
+
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = 0x000000;
+
+							}
+						}
+
+					}
+
+				}
+
+
+			}
+
+		}
+
+	}
 }

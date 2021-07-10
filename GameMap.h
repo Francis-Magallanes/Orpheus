@@ -32,7 +32,11 @@ class GameMap
 		uint32_t* gamemapBuffer;
 
 		Coordinate playerPos; // this will store the position of the player in the map
-	
+		
+		//this will update the buffer when the player object moves
+		//this will get the surroundings of the character (distance is 2 blocks)
+		void updateBuffer();
+
 	public:
 		GameMap();
 
