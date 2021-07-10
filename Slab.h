@@ -7,15 +7,15 @@ enum class TypeSlab {
     
     //this cannot be damaged by the player
     //Color: Light Blue (0x67B7D1)
-    DIAMOND,
+    DIAMOND = 1,
 
     // it takes 3 hits before it gets destroyed
     // Color: Light grey (0xD3D3D3)
-    CONCRETE,
+    CONCRETE = 2,
 
     // it takes 2 hits before it gets destroyed
     // Color: Light Brown (0xB5651D)
-    WOOD
+    WOOD = 3
 };
 
 class Slab :

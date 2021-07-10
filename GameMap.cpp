@@ -5,40 +5,71 @@
 #include <stdlib.h>
 #include <iostream>
 
+//This will be one of the maze maps for the game
+//This indicates where the slab object to be placed and its type
+int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
+	
+	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1, 1, 1},
+	{1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	2,	0,	0,	0, 0, 1},
+	{1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	2,	0,	0,	0, 0, 1},
+	{1,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	2,	0,	0,	0,	3,	0,	0,	0,	3,	0,	0,	2,	0,	0,	0,	2,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	1,	0,	0,	0,	0,	2,	0,	0,	0,	3,	0,	0,	0,	3,	0,	0,	2,	0,	0,	0,	2,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	1,	0,	0,	0,	0,	2,	0,	0,	0,	3,	3,	3,	3,	3,	0,	0,	2,	2,	2,	2,	2,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	2,	0,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	2,	0,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	2,	0,	0,	0,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	2,	2,	2,	2,	2,	0,	0,	2,	0,	0,	0,	3,	0,	0,	3,	3,	3,	3,	3,	3,	3,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	2,	2,	2,	2,	2,	0,	0,	2,	0,	0,	0,	3,	0,	0,	2,	2,	2,	2,	2,	2,	2,	1,	0,	0,	1,	1, 1, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	2,	2,	2,	2,	3,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	2,	2,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	3,	3,	3,	3,	3,	3,	2,	2,	2,	2,	2,	2,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	3,	3,	3,	3,	3,	3,	2,	2,	2,	2,	2,	2,	0,	0,	1,	0,	3,	3,	3, 3, 1},
+	{1,	0,	0,	3,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	2,	2,	0,	0,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	0,	2,	2,	0,	0,	0,	0,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	3,	3,	0,	0,	0,	0,	0,	0,	1,	1,	1,	0,	0,	0,	0, 0, 1},
+	{0,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	3,	3,	0,	0,	0,	0,	0,	0,	1,	1,	1,	0,	0,	0,	0, 0, 1},
+	{1,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	3,	3,	0,	0,	0,	0,	0,	0,	1,	1,	1,	0,	0,	0,	0, 0, 0},
+	{1,	0,	0,	0,	0,	0,	0,	1,	0,	0,	0,	0,	0,	0,	0,	3,	3,	0,	0,	0,	0,	0,	0,	1,	1,	1,	0,	0,	0,	0, 0, 1},
+	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1,	1,	1, 1, 1}
+
+};
+
 GameMap::GameMap() {
 	
 	//initialize the game map buffer
 	gamemapBuffer = (uint32_t*)malloc(HEIGHT * WIDTH * 4);
 
-	//initialize the game map
+	//initialize the game map with MAZE_1
 	map = new Matter ** [MAP_HEIGHT];
 	for (int i = 0; i < MAP_HEIGHT; i++) {
 		map[i] = new Matter * [MAP_WIDTH];
 
 		for (int j = 0; j < MAP_WIDTH; j++)
-			map[i][j] = NULL;
+			
+			if (MAZE_1[i][j] == 1) {
+				//instantiate a diamond slab object
+				map[i][j] = new Slab(TypeSlab::DIAMOND);
+			}
+			else if (MAZE_1[i][j] == 2) {
+				//instantiate a concrete slab object
+				map[i][j] = new Slab(TypeSlab::CONCRETE);
+			}
+			else if (MAZE_1[i][j] == 3) {
+				//instantiate a wood slab object
+				map[i][j] = new Slab(TypeSlab::WOOD);
+			}
+			else {
+				//this signifies that it is an empty space for the player to move in
+				map[i][j] = NULL;
+			}
+			
 	}
 		
-		
-		
-	//putting objects in the map variable
-	//a simple square around the screen
-	for (int h = 0; h < MAP_WIDTH; h++)
-		map[0][h] =  new Slab(TypeSlab::DIAMOND);
-
-	for (int h = 0; h < MAP_WIDTH; h++)
-		map[MAP_HEIGHT-1][h] = new Slab(TypeSlab::WOOD);
-
-	for (int i = 0; i < MAP_HEIGHT - 2; i++)
-		map[i+1][0] = new Slab(TypeSlab::CONCRETE);
-	
-	for (int i = 0; i < MAP_HEIGHT - 2; i++)
-		map[i + 1][MAP_WIDTH - 1] = new Slab(TypeSlab::DIAMOND);
-
-
 	//Place the player in the map at (1,1)
-	playerPos.X = 2;
-	playerPos.Y = 2;
+	playerPos.X = 0;
+	playerPos.Y = 20;
 	map[playerPos.Y][playerPos.X] = new Player();
 	
 
@@ -86,10 +117,9 @@ uint32_t* GameMap::getBufferReference() {
 
 void GameMap::movePlayer(Direction to) {
 
-	if (to == Direction::DOWN) {
+	if (to == Direction::DOWN and playerPos.Y + 1 < MAP_HEIGHT) {
 
-		//the player can only move towards a empty space in the map (or null value in the map variable)
-		//Also, the 
+		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y + 1][playerPos.X]) {
 
 			//this will get the sprite of the object before updating
@@ -115,9 +145,9 @@ void GameMap::movePlayer(Direction to) {
 		}
 
 	}
-	else if (to == Direction::UP) {
+	else if (to == Direction::UP and playerPos.Y - 1 >= 0 ) {
 
-		//the player can only move towards a empty space in the map (or null value in the map variable)
+		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y - 1][playerPos.X]) {
 			
 			//this will get the sprite of the object before updating
@@ -142,9 +172,9 @@ void GameMap::movePlayer(Direction to) {
 		}
 
 	}
-	else if (to == Direction::RIGHT) {
+	else if (to == Direction::RIGHT and playerPos.X + 1 < MAP_WIDTH) {
 
-		//the player can only move towards a empty space in the map (or null value in the map variable)
+		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y][playerPos.X + 1]) {
 
 			//this will get the sprite of the object before updating
@@ -171,10 +201,10 @@ void GameMap::movePlayer(Direction to) {
 		}
 
 	}
-	else {
+	else if (playerPos.X - 1 >= 0){
 
 		//for the left move
-		//the player can only move towards a empty space in the map (or null value in the map variable)
+		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y][playerPos.X - 1]) {
 
 			//this will get the sprite of the object before updating

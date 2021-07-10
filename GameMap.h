@@ -9,6 +9,7 @@
 #define MAP_HEIGHT 24 // HEIGHT / 20, in number of blocks
 #define MAP_WIDTH 32 // WIDTH / 20, in number of blocks
 
+//direction for which the player will move
 enum class Direction {
 	UP,
 	DOWN,
@@ -20,6 +21,7 @@ struct Coordinate {
 	int X;
 	int Y;
 };
+
 
 class GameMap
 {
@@ -34,7 +36,7 @@ class GameMap
 	public:
 		GameMap();
 
-		//this will give the image version of the game map variable
+		//this will return the internal frame buffer of the game map object
 		uint32_t* getBufferReference();
 
 		void movePlayer(Direction to);
