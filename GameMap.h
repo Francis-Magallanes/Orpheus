@@ -5,8 +5,9 @@
 #define HEIGHT 480
 #define WIDTH 640
 
-#define MAP_HEIGHT 24 // HEIGHT / 20
-#define MAP_WIDTH 32 // WIDTH / 20
+//each block will have a size of 20x20 pixels
+#define MAP_HEIGHT 24 // HEIGHT / 20, in number of blocks
+#define MAP_WIDTH 32 // WIDTH / 20, in number of blocks
 
 enum class Direction {
 	UP,

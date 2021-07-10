@@ -1,5 +1,5 @@
 #include "GameMap.h"
-#include "Block.h"
+#include "Slab.h"
 #include "Player.h"
 
 #include <stdlib.h>
@@ -24,18 +24,17 @@ GameMap::GameMap() {
 	//putting objects in the map variable
 	//a simple square around the screen
 	for (int h = 0; h < MAP_WIDTH; h++)
-		map[0][h] =  new Block();
+		map[0][h] =  new Slab(TypeSlab::DIAMOND);
 
 	for (int h = 0; h < MAP_WIDTH; h++)
-		map[MAP_HEIGHT-1][h] = new Block();
+		map[MAP_HEIGHT-1][h] = new Slab(TypeSlab::WOOD);
 
 	for (int i = 0; i < MAP_HEIGHT - 2; i++)
-		map[i+1][0] = new Block();
+		map[i+1][0] = new Slab(TypeSlab::CONCRETE);
 	
 	for (int i = 0; i < MAP_HEIGHT - 2; i++)
-		map[i + 1][MAP_WIDTH - 1] = new Block();
+		map[i + 1][MAP_WIDTH - 1] = new Slab(TypeSlab::DIAMOND);
 
-	map[21][21] = new Block();
 
 	//Place the player in the map at (1,1)
 	playerPos.X = 2;

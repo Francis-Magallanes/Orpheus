@@ -5,6 +5,7 @@
 #include "dependencies/MiniFB.h"
 #include "GameMap.h"
 
+
 #define HEIGHT 480
 #define WIDTH 640
 
@@ -89,8 +90,8 @@ int main()
 	
 	do
 	{
-		
 		mfb_update(window, gm.getBufferReference());
+
 	} while (mfb_wait_sync(window));
 
 	return 0;
