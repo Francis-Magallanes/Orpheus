@@ -103,7 +103,7 @@ uint32_t PLAYER_SPRITE_LEFT[400] = {
 Player::Player() {
 
 	hitpoints = 100;
-	attackDamage = 25;
+	attackDamage = 20;
 
 	//by default, the player object will face to the right
 	playerFacing = Direction::RIGHT;
