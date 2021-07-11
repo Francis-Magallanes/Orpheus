@@ -7,6 +7,7 @@ class Player : public Matter {
 	private: 
 		uint32_t* sprite; //this will be used to store the sprite
 		Direction playerFacing; //this will monitor where the player object is currently facing
+		int attackDamage;
 
 	public:
 		//Constructor
@@ -22,5 +23,7 @@ class Player : public Matter {
 		//it will also update its sprite according to its direction
 		void setNewDirectionFacing(Direction newDir);
 
+		//this is for handling any "damage" (i.e. player's attack) towards the object
+		void absorbDamage(int damage);
 };
 

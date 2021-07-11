@@ -36,7 +36,11 @@ class GameMap
 		//this will return the internal frame buffer of the game map object
 		uint32_t* getBufferReference();
 
+		//this will handle on the one block movement of the player object depending of the inputted direction
 		void movePlayer(Direction to);
+
+		//this will the attack action of the player object
+		void attackPlayer();
 		
 };
 

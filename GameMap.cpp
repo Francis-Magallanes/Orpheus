@@ -317,3 +317,8 @@ void GameMap::updateBuffer() {
 
 	}
 }
+
+void GameMap::attackPlayer() {
+
+
+}

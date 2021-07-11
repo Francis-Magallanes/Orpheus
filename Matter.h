@@ -19,5 +19,8 @@ class Matter
 		//this will get the 20x20 pixel sprite from the object in one-dimensional array
 		virtual uint32_t* getSprite() = 0;
 
+		//this is for handling any "damage" (i.e. player's attack) towards the object
+		virtual void absorbDamage(int damage) = 0;
+
 };
 
