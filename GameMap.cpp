@@ -7,6 +7,9 @@
 
 //This will be one of the maze maps for the game
 //This indicates where the slab object to be placed with its type
+// 1 represents the diamond slab
+// 2 represents the concrete slab
+// 3 represents the wood slab
 int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	0,	1,	1,	1,	1,	1,	1,	1, 1, 1},

@@ -25,8 +25,7 @@ class Slab :
     private:
         uint32_t* sprite;
         TypeSlab ts;
-        uint32_t color; //color of the slab for differentiation of the different type of slabs
-
+        
     public:
         Slab(TypeSlab type);
         ~Slab();
