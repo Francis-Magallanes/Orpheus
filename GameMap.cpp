@@ -322,7 +322,8 @@ void GameMap::attackPlayer() {
 			map[playerPos.Y - 1][playerPos.X]->absorbDamage(playerAD);
 
 			if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0)
-				map[playerPos.Y - 1][playerPos.X] = NULL; //this signifies that the object is destroyed
+				delete map[playerPos.Y - 1][playerPos.X]; //this signifies that the object is destroyed
+				map[playerPos.Y - 1][playerPos.X] = NULL;
 
 		}
 	}
@@ -332,8 +333,11 @@ void GameMap::attackPlayer() {
 
 			map[playerPos.Y + 1][playerPos.X]->absorbDamage(playerAD);
 
-			if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0)
-				map[playerPos.Y + 1][playerPos.X] = NULL; //this signifies that the object is destroyed
+			if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0) {
+				delete map[playerPos.Y + 1][playerPos.X]; //this signifies that the object is destroyed
+				map[playerPos.Y + 1][playerPos.X] = NULL;
+			}
+				
 
 		}
 
@@ -344,9 +348,11 @@ void GameMap::attackPlayer() {
 
 			map[playerPos.Y][playerPos.X+1]->absorbDamage(playerAD);
 
-			if (map[playerPos.Y ][playerPos.X+1]->getHitpoints() <= 0)
-				map[playerPos.Y ][playerPos.X+1] = NULL; //this signifies that the object is destroyed
-
+			if (map[playerPos.Y][playerPos.X + 1]->getHitpoints() <= 0) {
+				delete map[playerPos.Y][playerPos.X + 1]; //this signifies that the object is destroyed
+				map[playerPos.Y][playerPos.X + 1] = NULL;
+			}
+				
 		}
 	}
 	else if (currFacing == Direction::LEFT) {
@@ -355,8 +361,10 @@ void GameMap::attackPlayer() {
 
 			map[playerPos.Y][playerPos.X - 1]->absorbDamage(playerAD);
 
-			if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0)
-				map[playerPos.Y][playerPos.X - 1] = NULL; //this signifies that the object is destroyed
+			if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0) {
+				delete map[playerPos.Y][playerPos.X - 1]; //this signifies that the object is destroyed
+				map[playerPos.Y][playerPos.X - 1] = NULL;
+			}
 
 		}
 
