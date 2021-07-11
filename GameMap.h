@@ -9,13 +9,6 @@
 #define MAP_HEIGHT 24 // HEIGHT / 20, in number of blocks
 #define MAP_WIDTH 32 // WIDTH / 20, in number of blocks
 
-//direction for which the player will move
-enum class Direction {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
 
 struct Coordinate {
 	int X;
@@ -34,7 +27,7 @@ class GameMap
 		Coordinate playerPos; // this will store the position of the player in the map
 		
 		//this will update the buffer when the player object moves
-		//this will get the surroundings of the character (distance is 2 blocks)
+		//this will get the surroundings of the character (distance is 2 blocks) for the display
 		void updateBuffer();
 
 	public:

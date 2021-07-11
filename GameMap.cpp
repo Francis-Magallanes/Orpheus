@@ -100,8 +100,10 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 			
-			//update the player postion
+			//update the player postion and direction of facing
 			playerPos.Y = playerPos.Y + 1;
+			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
+
 			
 			//update the buffer
 			//this will get the surroundings of the character (distance is 2 blocks)
@@ -142,8 +144,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y - 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion
+			//update the player postion and the player object facing direction
 			playerPos.Y = playerPos.Y - 1;
+			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
 
 			//update the buffer
 			//this will get the surroundings of the character (distance is 2 blocks)
@@ -185,8 +188,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X + 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion
+			//update the player postion and player object facing direction
 			playerPos.X = playerPos.X + 1;
+			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
 
 			//update the buffer
 			//this will get the surroundings of the character (distance is 2 blocks)
@@ -230,8 +234,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X - 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion
+			//update the player postion and player object facing direction
 			playerPos.X = playerPos.X - 1;
+			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
 
 			//update the buffer
 			updateBuffer();
@@ -291,12 +296,12 @@ void GameMap::updateBuffer() {
 					}
 					else {
 
-						//for the null
+						//this "light up" the surrondings of the player
 						for (int k = 0; k < 20; k++) {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = 0x000000;
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = 0xEEDD82; 
 
 							}
 						}
