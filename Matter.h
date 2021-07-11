@@ -22,5 +22,9 @@ class Matter
 		//this is for handling any "damage" (i.e. player's attack) towards the object
 		virtual void absorbDamage(int damage) = 0;
 
+		//this will get the value of the hitpoints
+		int getHitpoints() {
+			return hitpoints;
+		}
 };
 

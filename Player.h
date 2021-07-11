@@ -25,5 +25,11 @@ class Player : public Matter {
 
 		//this is for handling any "damage" (i.e. player's attack) towards the object
 		void absorbDamage(int damage);
+
+		//this will get the value of playerFacing
+		Direction getPlayerFacing();
+
+		//this will get the value of attackDamage
+		int getAttackDamage();
 };
 

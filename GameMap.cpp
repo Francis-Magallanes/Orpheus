@@ -100,14 +100,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 			
-			//update the player postion and direction of facing
+			//update the player postion
 			playerPos.Y = playerPos.Y + 1;
-			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
-
 			
-			//update the buffer
-			//this will get the surroundings of the character (distance is 2 blocks)
-			updateBuffer();
 
 			//delete the upper portion
 			if (playerPos.Y - 3 >= 0) {
@@ -144,13 +139,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y - 1][playerPos.X] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion and the player object facing direction
+			//update the player postion
 			playerPos.Y = playerPos.Y - 1;
-			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
-
-			//update the buffer
-			//this will get the surroundings of the character (distance is 2 blocks)
-			updateBuffer();
+			
 
 			//delete the lower portion
 			if (playerPos.Y + 3 < MAP_HEIGHT) {
@@ -188,13 +179,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X + 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion and player object facing direction
+			//update the player postion
 			playerPos.X = playerPos.X + 1;
-			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
-
-			//update the buffer
-			//this will get the surroundings of the character (distance is 2 blocks)
-			updateBuffer();
+			
 
 			//delete the left portion
 			if (playerPos.X - 3 >= 0) {
@@ -234,12 +221,9 @@ void GameMap::movePlayer(Direction to) {
 			map[playerPos.Y][playerPos.X - 1] = map[playerPos.Y][playerPos.X];
 			map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion and player object facing direction
+			//update the player postion
 			playerPos.X = playerPos.X - 1;
-			dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
-
-			//update the buffer
-			updateBuffer();
+			
 
 			//delete the rightmost part
 			if (playerPos.X + 3 >= 0) {
@@ -265,6 +249,12 @@ void GameMap::movePlayer(Direction to) {
 		}
 
 	}
+
+	//update the direction for which the player object is facing
+	dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
+	//update the buffer
+	//this will get the surroundings of the character (distance is 2 blocks)
+	updateBuffer();
 
 }
 
@@ -320,5 +310,57 @@ void GameMap::updateBuffer() {
 
 void GameMap::attackPlayer() {
 
+	//the player will attack only one block in front of what he is facing
+	Direction currFacing = dynamic_cast<Player *>(map[playerPos.Y][playerPos.X])->getPlayerFacing();
+	int playerAD = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getAttackDamage();
 
+	if (currFacing == Direction::UP) {
+
+		//deal damage to the object 
+		if (map[playerPos.Y - 1][playerPos.X]) {
+			
+			map[playerPos.Y - 1][playerPos.X]->absorbDamage(playerAD);
+
+			if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0)
+				map[playerPos.Y - 1][playerPos.X] = NULL; //this signifies that the object is destroyed
+
+		}
+	}
+	else if (currFacing == Direction::DOWN) {
+		//deal damage to the object 
+		if (map[playerPos.Y + 1][playerPos.X]) {
+
+			map[playerPos.Y + 1][playerPos.X]->absorbDamage(playerAD);
+
+			if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0)
+				map[playerPos.Y + 1][playerPos.X] = NULL; //this signifies that the object is destroyed
+
+		}
+
+	}
+	else if (currFacing == Direction::RIGHT) {
+		//deal damage to the object 
+		if (map[playerPos.Y][playerPos.X+1]) {
+
+			map[playerPos.Y][playerPos.X+1]->absorbDamage(playerAD);
+
+			if (map[playerPos.Y ][playerPos.X+1]->getHitpoints() <= 0)
+				map[playerPos.Y ][playerPos.X+1] = NULL; //this signifies that the object is destroyed
+
+		}
+	}
+	else if (currFacing == Direction::LEFT) {
+		//deal damage to the object 
+		if (map[playerPos.Y][playerPos.X - 1]) {
+
+			map[playerPos.Y][playerPos.X - 1]->absorbDamage(playerAD);
+
+			if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0)
+				map[playerPos.Y][playerPos.X - 1] = NULL; //this signifies that the object is destroyed
+
+		}
+
+	}
+
+	updateBuffer();
 }
