@@ -1,6 +1,14 @@
 #pragma once
 #include <stdint.h>
 
+//direction for which the player will move
+enum class Direction {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
+};
+
 class Matter
 {
 	protected:
