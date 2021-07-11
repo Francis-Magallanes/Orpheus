@@ -5,20 +5,16 @@
 #define HEIGHT 480
 #define WIDTH 640
 
-#define MAP_HEIGHT 24 // HEIGHT / 20
-#define MAP_WIDTH 32 // WIDTH / 20
+//each block will have a size of 20x20 pixels
+#define MAP_HEIGHT 24 // HEIGHT / 20, in number of blocks
+#define MAP_WIDTH 32 // WIDTH / 20, in number of blocks
 
-enum class Direction {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
 
 struct Coordinate {
 	int X;
 	int Y;
 };
+
 
 class GameMap
 {
@@ -29,14 +25,22 @@ class GameMap
 		uint32_t* gamemapBuffer;
 
 		Coordinate playerPos; // this will store the position of the player in the map
-	
+		
+		//this will update the buffer when the player object moves
+		//this will get the surroundings of the character (distance is 2 blocks) for the display
+		void updateBuffer();
+
 	public:
 		GameMap();
 
-		//this will give the image version of the game map variable
+		//this will return the internal frame buffer of the game map object
 		uint32_t* getBufferReference();
 
+		//this will handle on the one block movement of the player object depending of the inputted direction
 		void movePlayer(Direction to);
+
+		//this will the attack action of the player object
+		void attackPlayer();
 		
 };
 
