@@ -16,7 +16,7 @@ GameMap gm;// this object will handle most of the game
 
 void keypress(struct mfb_window* window, mfb_key key, mfb_key_mod mod, bool isPressed)
 {	
-	
+
 	if (key == KB_KEY_ESCAPE) {
 		mfb_close(window);
 	}
@@ -39,6 +39,10 @@ void keypress(struct mfb_window* window, mfb_key key, mfb_key_mod mod, bool isPr
 		//for move left
 		gm.movePlayer(Direction::LEFT);
 
+	}
+	//this will handle the keypress for attack 
+	else if (key == KB_KEY_SPACE) {
+		gm.attackPlayer();
 	}
 
 }
