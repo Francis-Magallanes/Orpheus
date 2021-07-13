@@ -1,6 +1,9 @@
 #pragma once
 #include <stdint.h>
 
+#define LIGHT 0xEEDD82
+#define DARK 0x000000
+
 //direction for which the player will move
 enum class Direction {
 	UP,
@@ -13,6 +16,7 @@ class Matter
 {
 	protected:
 		int hitpoints;
+		uint32_t* sprite; //this will be used to store the sprite
 
 	public:
 
