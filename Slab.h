@@ -24,6 +24,7 @@ class Slab :
 
     private:
         uint32_t* WOOD_SPRITE_1; //this is for the sprite of the wood slab at full health
+        uint32_t* WOOD_SPRITE_2; //this is for the sprite of the wood slab at half health (25)
         TypeSlab ts;
         
     public:

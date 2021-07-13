@@ -1,6 +1,5 @@
 #pragma once
 #include "Matter.h"
-#include "dependencies/CImg.h"
 #include <stdint.h>
 
 class Player : public Matter {

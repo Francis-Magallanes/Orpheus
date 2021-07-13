@@ -1,4 +1,5 @@
 #pragma once
+#include "dependencies/CImg.h"
 #include <stdint.h>
 
 #define LIGHT 0xEEDD82
