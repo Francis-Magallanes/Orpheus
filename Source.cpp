@@ -5,7 +5,6 @@
 #include "dependencies/MiniFB.h"
 #include "GameMap.h"
 
-#include "windows.h"
 
 
 #define HEIGHT 480

@@ -5,9 +5,9 @@
 class Player : public Matter {
 	
 	private: 
-		uint32_t* sprite; //this will be used to store the sprite
 		Direction playerFacing; //this will monitor where the player object is currently facing
 		int attackDamage;
+		uint32_t* PLAYER_SPRITE_RIGHT; // sprite for when the player facing to the right
 
 	public:
 		//Constructor

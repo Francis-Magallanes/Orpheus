@@ -43,6 +43,7 @@ GameMap::GameMap() {
 	
 	//initialize the game map buffer with black pixels
 	gamemapBuffer = (uint32_t*)malloc(HEIGHT * WIDTH * 4);
+
 	for (int i = 0; i < HEIGHT; i++)
 		for (int j = 0; j < WIDTH; j++)
 			gamemapBuffer[WIDTH * i + j] = 0x000000;
@@ -88,6 +89,7 @@ uint32_t* GameMap::getBufferReference() {
 
 void GameMap::movePlayer(Direction to) {
 
+
 	if (to == Direction::DOWN and playerPos.Y + 1 < MAP_HEIGHT) {
 
 		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
@@ -114,7 +116,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = 0x000000;
+								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = DARK;
 
 							}
 						}
@@ -154,7 +156,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = 0x000000;
+								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = DARK;
 
 							}
 						}
@@ -194,7 +196,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X - 3) * 20) + l)] = 0x000000;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X - 3) * 20) + l)] = DARK;
 
 							}
 						}
@@ -236,7 +238,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X + 3) * 20) + l)] = 0x000000;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X + 3) * 20) + l)] = DARK;
 
 							}
 						}
@@ -291,7 +293,7 @@ void GameMap::updateBuffer() {
 
 							for (int l = 0; l < 20; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = 0xEEDD82; 
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = LIGHT; 
 
 							}
 						}
