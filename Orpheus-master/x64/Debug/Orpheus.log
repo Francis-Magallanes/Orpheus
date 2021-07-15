@@ -1,0 +1,7 @@
+﻿Source.obj : error LNK2019: unresolved external symbol mfb_open referenced in function main
+Source.obj : error LNK2019: unresolved external symbol mfb_update referenced in function main
+Source.obj : error LNK2019: unresolved external symbol mfb_close referenced in function "void __cdecl keypress(struct mfb_window *,enum mfb_key,enum mfb_key_mod,bool)" (?keypress@@YAXPEAUmfb_window@@W4mfb_key@@W4mfb_key_mod@@_N@Z)
+Source.obj : error LNK2019: unresolved external symbol mfb_set_keyboard_callback referenced in function main
+Source.obj : error LNK2019: unresolved external symbol mfb_wait_sync referenced in function main
+C:\Users\John Matthew\Downloads\Orpheus-master\dependencies\minifb.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\John Matthew\Downloads\Orpheus-master\x64\Debug\Orpheus.exe : fatal error LNK1120: 5 unresolved externals
