@@ -8,6 +8,9 @@ class Player : public Matter {
 		Direction playerFacing; //this will monitor where the player object is currently facing
 		int attackDamage;
 		uint32_t* PLAYER_SPRITE_RIGHT; // sprite for when the player facing to the right
+		uint32_t* PLAYER_SPRITE_RIGHT_1; // sprite for when the player facing to the right second version
+		uint32_t* PLAYER_SPRITE_LEFT_1; // sprite for when the player facing to the left
+		uint32_t* PLAYER_SPRITE_LEFT; //sprite for when the playyer facing to the left second version
 
 	public:
 		//Constructor
