@@ -10,7 +10,6 @@ enum class TypeSlab {
     DIAMOND = 1,
 
     // it takes 3 hits before it gets destroyed
-    // Color: Light grey (0xD3D3D3)
     CONCRETE = 2,
 
     // it takes 2 hits before it gets destroyed
@@ -25,6 +24,9 @@ class Slab :
     private:
         uint32_t* WOOD_SPRITE_1; //this is for the sprite of the wood slab at full health
         uint32_t* WOOD_SPRITE_2; //this is for the sprite of the wood slab at half health (25)
+        uint32_t* CONCRETE_SPRITE_1; 
+        uint32_t* CONCRETE_SPRITE_2;
+        uint32_t* CONCRETE_SPRITE_3;
         TypeSlab ts;
         
     public:
