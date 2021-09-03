@@ -7,9 +7,6 @@
 
 
 
-#define HEIGHT 480
-#define WIDTH 640
-
 GameMap gm;// this object will handle most of the game
 
 

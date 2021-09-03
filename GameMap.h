@@ -2,12 +2,12 @@
 #include "Matter.h"
 #include <stdint.h>
 
-#define HEIGHT 480
-#define WIDTH 640
+#define HEIGHT 720
+#define WIDTH 1280
 
 //each block will have a size of 20x20 pixels
-#define MAP_HEIGHT 24 // HEIGHT / 20, in number of blocks
-#define MAP_WIDTH 32 // WIDTH / 20, in number of blocks
+#define MAP_HEIGHT 23 // HEIGHT / 20, in number of blocks
+#define MAP_WIDTH 42 // WIDTH / 20, in number of blocks
 
 
 struct Coordinate {
