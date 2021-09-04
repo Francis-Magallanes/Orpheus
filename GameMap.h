@@ -5,10 +5,15 @@
 #define HEIGHT 720
 #define WIDTH 1280
 
-//each block will have a size of 20x20 pixels
-#define MAP_HEIGHT 23 // HEIGHT / 20, in number of blocks
-#define MAP_WIDTH 42 // WIDTH / 20, in number of blocks
+//each block will have a size of 30x30 pixels
+#define MAP_HEIGHT 23 // height of the playable map: HEIGHT / 30 (in number of blocks)
+#define MAP_WIDTH 42 // width of the playable map: WIDTH / 30  (in number of blocks)
 
+#define MAP_START_X 10 //this where the pixels of the playable map start in x position
+#define MAP_START_Y 30 //this where the pixels of the playable map start in y position
+
+#define MAP_END_X 1270 //this where the pixels of the playable map end in x position
+#define MAP_END_Y 720  //this where the pixels of the playable map end in y position
 
 struct Coordinate {
 	int X;
@@ -31,10 +36,7 @@ class GameMap
 		void updateBuffer();
 
 	public:
-		GameMap();
-
-		//this will return the internal frame buffer of the game map object
-		uint32_t* getBufferReference();
+		GameMap(uint32_t* framebuffer);
 
 		//this will handle on the one block movement of the player object depending of the inputted direction
 		void movePlayer(Direction to);
