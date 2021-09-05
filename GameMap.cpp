@@ -1,6 +1,4 @@
-#include "GameMap.h"
-#include "Slab.h"
-#include "Player.h"
+#include "Definitions.h"
 
 #include <stdlib.h>
 #include <iostream>
@@ -10,6 +8,11 @@
 // 1 represents the diamond slab
 // 2 represents the concrete slab
 // 3 represents the wood slab
+// 4 represents collectable
+// 5 represents Player or cerberus
+// 6 represents the heal
+// 7 represents the trap
+// 8 represents the weapon
 int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1},
@@ -65,6 +68,22 @@ GameMap::GameMap(uint32_t* framebuffer) {
 			else if (MAZE_1[i][j] == 3) {
 				//instantiate a wood slab object
 				map[i][j] = new Slab(TypeSlab::WOOD);
+			}
+			else if (MAZE_1[i][j] == 4) {
+				//TODO: adjust for the collectable object
+				map[i][j] = NULL;
+			}
+			else if (MAZE_1[i][j] == 6) {
+				//TODO: adjust for the heal object
+				map[i][j] = NULL;
+			}
+			else if (MAZE_1[i][j] == 7) {
+				//TODO: adjust for the trap object
+				map[i][j] = NULL;
+			}
+			else if (MAZE_1[i][j] == 8) {
+				//TODO: adjust for the weapon object
+				map[i][j] = NULL;
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in

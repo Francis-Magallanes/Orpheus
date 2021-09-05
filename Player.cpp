@@ -1,6 +1,4 @@
-#include "Player.h"
-#include <stdint.h>
-#include <iostream>
+#include "Definitions.h"
 
 //this is for the sprite where the player object facing upwards
 //0xFFA500 - Orange
@@ -142,9 +140,6 @@ void Player::setNewDirectionFacing(Direction newDir) {
 	}
 }
 
-uint32_t* Player::getSprite() {
-	return sprite;
-}
 
 void Player::absorbDamage(int damage) {
 
