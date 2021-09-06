@@ -94,6 +94,8 @@ private:
 	//this will get the surroundings of the character (distance is 2 blocks) for the display
 	void updateBuffer();
 
+	//this will update the gamebar portion when the stats of the player is affected
+	void updateGameBar();
 
 public:
 	GameMap(uint32_t* framebuffer);
