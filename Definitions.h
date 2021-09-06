@@ -21,7 +21,7 @@
 
 #define NUMBER_SPRITES 59 //this is a number of sprites stored in a file which can be accessed by the "sprites" pointer
 
-#define LIGHT 0xEEDD82
+#define LIGHT 0xFFFFFF
 #define DARK 0x000000
 
 
