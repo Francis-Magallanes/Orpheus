@@ -1,6 +1,9 @@
 #pragma once
 #include "dependencies/CImg.h"
 #include <stdint.h>
+#include <stdlib.h>
+#include <string>
+#include <vector>
 
 //dimensions of the screen resolution
 #define HEIGHT 720
@@ -19,11 +22,14 @@
 #define BLOCK_WIDTH 30 //in pixels
 #define BLOCK_HEIGHT 30 //in pixels
 
-#define NUMBER_SPRITES 59 //this is a number of sprites stored in a file which can be accessed by the "sprites" pointer
+#define NUMBER_SPRITES 23 //this is a number of sprites stored in a file forr the gameplay
+
+#define NUMBER_SPRITES_ALPHANUM 37  //this is a number of sprites stored in a file for the text in the gameplay
 
 #define LIGHT 0xFFFFFF
 #define DARK 0x000000
 
+#define START_CHAR_SPRITES 23 //this is the start of the 0-9 and A-Z characters
 
 // this will distinguish the different type of slab and it characteristics
 // each type of slab will have a unique color, whether can be damage or not, and hitpoints
@@ -39,6 +45,24 @@ enum class TypeSlab {
 	// it takes 2 hits before it gets destroyed
 	// Color: Light Brown (0xB5651D)
 	WOOD = 3
+};
+
+//this is to differentiate the different object for items
+enum class TypeItems {
+
+	COLLECTABLE1 = 1,
+
+	COLLECTABLE2 = 2,
+
+	COLLECTABLE3 = 3,
+
+	CERBERUS = 5,
+
+	HEAL = 6,
+
+	TRAP = 7,
+
+	WEAPON = 8
 };
 
 //direction for which the player will move
@@ -78,37 +102,6 @@ class Matter
 
 
 
-class GameMap
-{
-private:
-	//this will contain the different objects inside the game map
-	// it is in two dimensional scheme for easier access of the objects
-	Matter*** map;
-	uint32_t* gamemapBuffer;
-
-	uint32_t* sprites; //this will contain all the sprites needed for the game
-
-	Coordinate playerPos; // this will store the position of the player in the map
-
-	//this will update the buffer when the player object moves
-	//this will get the surroundings of the character (distance is 2 blocks) for the display
-	void updateBuffer();
-
-	//this will update the gamebar portion when the stats of the player is affected
-	void updateGameBar();
-
-public:
-	GameMap(uint32_t* framebuffer);
-
-	//this will handle on the one block movement of the player object depending of the inputted direction
-	void movePlayer(Direction to);
-
-	//this will the attack action of the player object
-	void attackPlayer();
-
-};
-
-
 class Player : public Matter {
 
 	private:
@@ -141,6 +134,8 @@ class Player : public Matter {
 
 		//this will get the value of attackDamage
 		int getAttackDamage();
+
+
 };
 
 class Slab :
@@ -169,5 +164,56 @@ class Slab :
 
 		//this is for handling any "damage" (i.e. player's attack) towards the object
 		void absorbDamage(int damage);
+
+};
+
+//this will handle the different "non-essential" objects such as cerberus and heal
+class Items : public Matter {
+
+	public:
+
+		//the 'type' will determine the type of the object.
+		//sprites will contain the different sprites that is used in the game
+		//At a specific index, it will return a unique sprite. Following are the index sprite needed by the Items class
+		// 18 : Weapon
+		// 19 : Heal
+		// 20: Creep 1
+		// 21: Creep 2
+		// 22: Cerberus
+		Items(TypeItems type, uint32_t* sprites);
+
+		void absorbDamage();
+};
+
+
+class GameMap
+{
+private:
+	//this will contain the different objects inside the game map
+	// it is in two dimensional scheme for easier access of the objects
+	Matter*** map;
+	uint32_t* gamemapBuffer;
+
+	uint32_t* sprites; //this will contain all the sprites needed for the game
+
+	uint32_t* sprites_alphanum; //this will contain all sprites needed for text
+
+	Coordinate playerPos; // this will store the position of the player in the map
+
+	//this will update the buffer when the player object moves
+	//this will get the surroundings of the character (distance is 2 blocks) for the display
+	void updateBuffer();
+
+	//this will update the gamebar portion of the gamemap when the stats of the player is affected
+	void updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables);
+
+public:
+	GameMap(uint32_t* framebuffer);
+
+	//this will handle on the one block movement of the player object depending of the inputted direction
+	void movePlayer(Direction to);
+
+	//this will the attack action of the player object
+	void attackPlayer();
 
 };

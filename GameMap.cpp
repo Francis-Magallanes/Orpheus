@@ -1,7 +1,5 @@
 #include "Definitions.h"
 
-#include <stdlib.h>
-#include <iostream>
 
 //This will be one of the maze maps for the game
 //This indicates where the slab object to be placed with its type
@@ -49,7 +47,7 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
 	
 	//load the sprites
-	cimg_library::CImg<unsigned char> all_sprites("assets/spritesheet.bmp");
+	cimg_library::CImg<unsigned char> all_sprites("assets/in_game_sprites.bmp");
 	uint8_t* all_sprites_pt = all_sprites.data();
 	sprites = new uint32_t[BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES)];
 	//putting the image into the sprite variable for wood slab
@@ -68,6 +66,28 @@ GameMap::GameMap(uint32_t* framebuffer) {
 
 		}
 	}
+
+	//retrieval of the alphanumeric sprites
+	sprites_alphanum = new uint32_t[ BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM)];
+	cimg_library::CImg<unsigned char> all_sprites_alphanum("assets/alphanum_sprites.bmp");
+	uint8_t* all_sprites_alphanum_pt = all_sprites_alphanum.data();
+	//putting the image into the sprite variable for wood slab
+	//putting the image into the sprite variable for wood slab
+	for (int y = 0; y < BLOCK_HEIGHT; y++) {
+
+		for (int x = 0; x < (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM); x++) {
+
+			// Get the RGB data
+			uint8_t r = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x];
+			uint8_t g = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + (BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM))];
+			uint8_t b = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + (2 * BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM))];
+
+			//transfer it 
+			sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x] = (r << 16) + (g << 8) + b;
+
+		}
+	}
+
 
 	//initialize the game map with MAZE_1
 	map = new Matter ** [MAP_HEIGHT];
@@ -118,8 +138,13 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	
 	updateBuffer();
 
-}
+	std::vector <Items *> collectables;
+	collectables.push_back(new Items(static_cast<TypeItems>(1), sprites));
+	collectables.push_back(new Items(static_cast<TypeItems>(2), sprites));
+	collectables.push_back(new Items(static_cast<TypeItems>(3), sprites));
 
+	updateGameBar(100, 100, collectables);
+}
 
 void GameMap::movePlayer(Direction to) {
 
@@ -407,3 +432,48 @@ void GameMap::attackPlayer() {
 
 	updateBuffer();
 }
+
+void GameMap::updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables) {
+	
+	//clear the gamebar part
+	memset(gamemapBuffer, LIGHT, 30 * WIDTH * sizeof(uint32_t));
+
+	std::string string_display = "health:" + std::to_string(playerHitpoints) + " weapon health:" + std::to_string(weaponHitpoints) + " items:";
+	
+	//display the PlayerHitsPoints, weapon health
+	for (int i = 0; i < string_display.length(); i++) {
+
+		//this "light up" the surrondings of the player
+		for (int y = 0; y < BLOCK_HEIGHT; y++) {
+
+			for (int x = 0; x < BLOCK_WIDTH; x++) {
+
+				if (isdigit(string_display.at(i))) { //for the case when the number is a digit
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (string_display.at(i) - '0')];
+				}
+				else if (string_display.at(i) == ' ') {
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = LIGHT;
+				}
+				else if (string_display.at(i) == ':') { //for the colon. It can be found at the last portion of the sprites for alphanum
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (NUMBER_SPRITES_ALPHANUM - 1)];
+				}
+				else {//for the letters
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (10 + string_display.at(i) - 'a')];
+				}
+				
+
+			}
+		}
+
+	}
+
+	//for the collected items
+	for (int i = 0; i < collectables.size(); i++) 
+		for (int y = 0; y < BLOCK_HEIGHT; y++)
+			for (int x = 0; x < BLOCK_WIDTH; x++)
+				//start the end of the items portion of the gamebar
+				gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i) + (string_display.length() * BLOCK_WIDTH)] = collectables.at(i)->getSprite()[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x];
+	
+
+}
+
