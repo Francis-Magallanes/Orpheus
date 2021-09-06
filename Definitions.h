@@ -60,7 +60,7 @@ enum class TypeItems {
 
 	HEAL = 6,
 
-	TRAP = 7,
+	CREEP = 7,
 
 	WEAPON = 8
 };
@@ -170,11 +170,15 @@ class Slab :
 //this will handle the different "non-essential" objects such as cerberus and heal
 class Items : public Matter {
 
+	private:
+		TypeItems type;
+
 	public:
 
 		//the 'type' will determine the type of the object.
 		//sprites will contain the different sprites that is used in the game
-		//At a specific index, it will return a unique sprite. Following are the index sprite needed by the Items class
+		//At a specific index, it will return a unique sprite. Following are the index sprite needed by the Items class\
+		// 0-3 - different collectables
 		// 18 : Weapon
 		// 19 : Heal
 		// 20: Creep 1
@@ -182,7 +186,10 @@ class Items : public Matter {
 		// 22: Cerberus
 		Items(TypeItems type, uint32_t* sprites);
 
-		void absorbDamage();
+		void absorbDamage(int damage);
+
+		TypeItems getType();
+		int getHitpoints();
 };
 
 

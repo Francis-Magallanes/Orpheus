@@ -34,13 +34,15 @@ int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,	3,	3,	3,	3,	3,	3,	-1,	6,	-1,	-1,	-1,	-1,	-1,	1,	-1,	2,	3,	4,	3,	2,	-1,	1,	-1,	-1,	-1,	-1,	3,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1},
 	{1,	3,	3,	3,	3,	3,	3,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	2,	3,	3,	3,	2,	6,	1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1},
 	{1,	-1,	-1,	-1,	-1,	6,	-1,	6,	2,	2,	2,	2,	2,	2,	1,	-1,	2,	2,	2,	2,	2,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	-1, -1,	-1,	-1,	-1,	-1,	1},
-	{1,	4,	-1,	-1,	-1,	-1,	-1,	-1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	1,	-1,	1,	-1,	-1,	-1,	8,	1},
+	{1,	4,	-1,	-1,	-1,	-1,	-1,	-1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	1,	5,	1,	-1,	-1,	-1,	8,	1},
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1}
 
 };
 
 GameMap::GameMap(uint32_t* framebuffer) {
 	
+	int collectable_counter = 1;
+
 	//initialize the game map buffer with black pixels
 	gamemapBuffer = framebuffer;
 
@@ -109,20 +111,26 @@ GameMap::GameMap(uint32_t* framebuffer) {
 				map[i][j] = new Slab(TypeSlab::WOOD, sprites);
 			}
 			else if (MAZE_1[i][j] == 4) {
-				//TODO: adjust for the collectable object
-				map[i][j] = NULL;
+				//instantiate collectable object
+				map[i][j] = new Items(static_cast<TypeItems> (collectable_counter++), sprites);
+			}
+			else if (MAZE_1[i][j] == 5) {
+				//instantiate the cerberus object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (5), sprites);
+
 			}
 			else if (MAZE_1[i][j] == 6) {
-				//TODO: adjust for the heal object
-				map[i][j] = NULL;
+				//instantiate heal object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (6), sprites);
+			
 			}
 			else if (MAZE_1[i][j] == 7) {
-				//TODO: adjust for the trap object
-				map[i][j] = NULL;
+				//instantiate creep object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (7), sprites);
 			}
 			else if (MAZE_1[i][j] == 8) {
-				//TODO: adjust for the weapon object
-				map[i][j] = NULL;
+				//instantiate weapon object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (8), sprites);
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in
@@ -132,8 +140,8 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	}
 		
 	//Place the player in the map at (1,1)
-	playerPos.X = 0;
-	playerPos.Y = 20;
+	playerPos.X = 3;
+	playerPos.Y = 11;
 	map[playerPos.Y][playerPos.X] = new Player(sprites);
 	
 	updateBuffer();
