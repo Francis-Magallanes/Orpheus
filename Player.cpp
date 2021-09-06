@@ -6,13 +6,10 @@
 
 Player::Player(uint32_t* sprites) {
 
-	uint8_t r, g, b;
-	uint32_t color;
-
 	//initialize the sprite pointers
 	PLAYER_SPRITE_RIGHT = sprites + (BLOCK_WIDTH * 10);
 	PLAYER_SPRITE_RIGHT_1 = PLAYER_SPRITE_RIGHT + BLOCK_WIDTH;
-	PLAYER_SPRITE_LEFT = sprites + (BLOCK_WIDTH * 13);
+	PLAYER_SPRITE_LEFT = sprites + (BLOCK_WIDTH * 12);
 	PLAYER_SPRITE_LEFT_1 = PLAYER_SPRITE_LEFT + BLOCK_WIDTH;
 	
 	//TODO: Add sprites for the player with weapon

@@ -40,9 +40,7 @@ void keypress(struct mfb_window* window, mfb_key key, mfb_key_mod mod, bool isPr
 }
 int main()
 {
-	
-
-	
+		
 	struct mfb_window* window = mfb_open("Orpheus", WIDTH, HEIGHT);
 	mfb_set_keyboard_callback(window, keypress); // the bind the keypress callback
 	uint32_t* framebuffer = (uint32_t*)malloc(HEIGHT * WIDTH * 4);

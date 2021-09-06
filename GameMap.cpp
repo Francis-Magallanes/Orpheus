@@ -46,27 +46,25 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	//initialize the game map buffer with black pixels
 	gamemapBuffer = framebuffer;
 
-	for (int i = 0; i < HEIGHT; i++)
-		for (int j = 0; j < WIDTH; j++)
-			gamemapBuffer[WIDTH * i + j] = 0x000000;
-
+	memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
+	
 	//load the sprites
 	cimg_library::CImg<unsigned char> all_sprites("assets/spritesheet.bmp");
 	uint8_t* all_sprites_pt = all_sprites.data();
 	sprites = new uint32_t[BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES)];
+	//putting the image into the sprite variable for wood slab
 	//putting the image into the sprite variable for wood slab
 	for (int y = 0; y < BLOCK_HEIGHT; y++) {
 
 		for (int x = 0; x < (BLOCK_WIDTH * NUMBER_SPRITES); x++) {
 
 			// Get the RGB data
-			uint8_t r = all_sprites_pt[BLOCK_HEIGHT * y + x];
-			uint8_t g = all_sprites_pt[BLOCK_HEIGHT * y + x + BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES)];
-			uint8_t b = all_sprites_pt[BLOCK_HEIGHT * y + x + 2 * BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES)];
-			uint32_t color = (r << 16) + (g << 8) + b;
+			uint8_t r = all_sprites_pt[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x];
+			uint8_t g = all_sprites_pt[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x + (BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES))];
+			uint8_t b = all_sprites_pt[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x + (2 * BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES))];
 
 			//transfer it 
-			sprites[20 * y + x] = color;
+			sprites[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x] = (r << 16) + (g << 8) + b;
 
 		}
 	}
@@ -141,18 +139,17 @@ void GameMap::movePlayer(Direction to) {
 			//update the player postion
 			playerPos.Y = playerPos.Y + 1;
 			
-
 			//delete the upper portion
 			if (playerPos.Y - 3 >= 0) {
 
 				for (int i = 0; i < 5; i++) {
 
 					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = DARK;
+								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * BLOCK_WIDTH + k) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l)] = DARK;
 
 							}
 						}
@@ -188,11 +185,11 @@ void GameMap::movePlayer(Direction to) {
 
 					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
 
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * 20 + k) + (((playerPos.X - 2 + i) * 20) + l)] = DARK;
+								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * BLOCK_WIDTH + k) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l)] = DARK;
 
 							}
 						}
@@ -228,11 +225,11 @@ void GameMap::movePlayer(Direction to) {
 
 					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
 
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X - 3) * 20) + l)] = DARK;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k) + (((playerPos.X - 3) * BLOCK_WIDTH) + l)] = DARK;
 
 							}
 						}
@@ -270,11 +267,11 @@ void GameMap::movePlayer(Direction to) {
 
 					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
 
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * 20) + k) + (((playerPos.X + 3) * 20) + l)] = DARK;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k) + (((playerPos.X + 3) * BLOCK_WIDTH) + l)] = DARK;
 
 							}
 						}
@@ -312,11 +309,11 @@ void GameMap::updateBuffer() {
 
 						uint32_t* sprite_mat = map[(playerPos.Y - 2) + i][(playerPos.X - 2) + j]->getSprite();
 
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = sprite_mat[20 * k + l];
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l)] = sprite_mat[(BLOCK_WIDTH * NUMBER_SPRITES) * k + l];
 
 							}
 						}
@@ -325,11 +322,11 @@ void GameMap::updateBuffer() {
 					else {
 
 						//this "light up" the surrondings of the player
-						for (int k = 0; k < 20; k++) {
+						for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							for (int l = 0; l < 20; l++) {
+							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * 20) + k) + ((((playerPos.X - 2) + j) * 20) + l)] = LIGHT; 
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l)] = LIGHT; 
 
 							}
 						}

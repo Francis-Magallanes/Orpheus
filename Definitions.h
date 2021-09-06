@@ -2,6 +2,7 @@
 #include "dependencies/CImg.h"
 #include <stdint.h>
 
+//dimensions of the screen resolution
 #define HEIGHT 720
 #define WIDTH 1280
 
