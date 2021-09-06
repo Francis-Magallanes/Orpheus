@@ -25,11 +25,8 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Definitions.h" />
     <ClInclude Include="dependencies\CImg.h" />
-    <ClInclude Include="Slab.h" />
-    <ClInclude Include="GameMap.h" />
-    <ClInclude Include="Matter.h" />
-    <ClInclude Include="Player.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
