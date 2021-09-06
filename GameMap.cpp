@@ -149,7 +149,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * BLOCK_WIDTH + k) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l)] = DARK;
+								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * BLOCK_WIDTH + k  + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
 
 							}
 						}
@@ -189,7 +189,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * BLOCK_WIDTH + k) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l)] = DARK;
+								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * BLOCK_WIDTH + k + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
 
 							}
 						}
@@ -229,7 +229,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k) + (((playerPos.X - 3) * BLOCK_WIDTH) + l)] = DARK;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X - 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
 
 							}
 						}
@@ -271,7 +271,7 @@ void GameMap::movePlayer(Direction to) {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k) + (((playerPos.X + 3) * BLOCK_WIDTH) + l)] = DARK;
+								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X + 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
 
 							}
 						}
@@ -298,11 +298,11 @@ void GameMap::updateBuffer() {
 	for (int i = 0; i < 5; i++) {
 
 
-		if ((playerPos.Y - 2) + i >= 0 and (playerPos.Y - 2) + i < MAP_HEIGHT) {
+		if ((playerPos.Y - 2) + i >= 0 and (playerPos.Y - 2) + i < MAP_HEIGHT) { //the condition is based on the 2d array
 
 			for (int j = 0; j < 5; j++) {
 
-				if ((playerPos.X - 2) + j >= 0 and (playerPos.X - 2) + j < MAP_WIDTH) {
+				if ((playerPos.X - 2) + j >= 0 and (playerPos.X - 2) + j < MAP_WIDTH) { //the condition is based on the 2d array
 
 					if (map[(playerPos.Y - 2) + i][(playerPos.X - 2) + j]) {
 						//put the sprite in the buffer if there is an object on it
@@ -313,7 +313,7 @@ void GameMap::updateBuffer() {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l)] = sprite_mat[(BLOCK_WIDTH * NUMBER_SPRITES) * k + l];
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k + MAP_START_Y) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l + MAP_START_X)] = sprite_mat[(BLOCK_WIDTH * NUMBER_SPRITES) * k + l];
 
 							}
 						}
@@ -326,7 +326,7 @@ void GameMap::updateBuffer() {
 
 							for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l)] = LIGHT; 
+								gamemapBuffer[WIDTH * ((((playerPos.Y - 2) + i) * BLOCK_WIDTH) + k + MAP_START_Y) + ((((playerPos.X - 2) + j) * BLOCK_WIDTH) + l + MAP_START_X)] = LIGHT;
 
 							}
 						}
