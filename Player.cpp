@@ -81,10 +81,21 @@ Direction Player::getPlayerFacing() { return playerFacing; }
 int Player::getAttackDamage() { return attackDamage; }
 
 void Player::healUp(int amount) {
-	hitpoints = hitpoints + amount;
+	
+	if(hitpoints < 140)
+		hitpoints = hitpoints + amount;
 }
 
 std::vector<Items*> Player::getCollectedItems() { return bag; }
+
+void Player::addCollectedItem(Items* collectable) {
+
+	if (collectable->getType() == TypeItems::COLLECTABLE1 ||
+		collectable->getType() == TypeItems::COLLECTABLE2 ||
+		collectable->getType() == TypeItems::COLLECTABLE3) {
+		bag.push_back(collectable);
+	}
+}
 
 Player::~Player() {
 

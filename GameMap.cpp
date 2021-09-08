@@ -146,15 +146,13 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	
 	updateBuffer();
 
-	std::vector <Items *> collectables;
-	collectables.push_back(new Items(static_cast<TypeItems>(1), sprites));
-	collectables.push_back(new Items(static_cast<TypeItems>(2), sprites));
-	collectables.push_back(new Items(static_cast<TypeItems>(3), sprites));
-
-	updateGameBar(100, 100, collectables);
+	updateGameBar(100, 100, dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getCollectedItems());
 }
 
 void GameMap::movePlayer(Direction to) {
+
+
+	Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
 
 	if (to == Direction::DOWN and playerPos.Y + 1 < MAP_HEIGHT) {
 
@@ -171,13 +169,23 @@ void GameMap::movePlayer(Direction to) {
 			if (map[playerPos.Y + 1][playerPos.X]->isItemsInstance()) {//and that object is an items objects
 
 				if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() != TypeItems::CERBERUS) {//make sure it is not a cerberus
-					//do the heal effect
 					if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::HEAL) {
-						
+
 						//heal up the player based on the hitpoints of the heal item
-						dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->healUp(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
 					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add the item to bag of the player object
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
+					}
+
+					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
 					updatePlayerDown();
+					
 				}
 				else {
 					//do something for the cerberus
@@ -203,9 +211,18 @@ void GameMap::movePlayer(Direction to) {
 					if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::HEAL) {
 						
 						//heal up the player based on the hitpoints of the heal item
-						dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->healUp(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+					}
+					//for the collectable
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add item to the player
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
 					}
 
+					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
 					updatePlayerUp();
 				}
 			}
@@ -226,10 +243,19 @@ void GameMap::movePlayer(Direction to) {
 					if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::HEAL) {
 
 						//heal up the player based on the hitpoints of the heal item
-						dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
 
 					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add item to player
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
+					}
 
+					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
 					updatePlayerRight();
 				}
 
@@ -249,11 +275,22 @@ void GameMap::movePlayer(Direction to) {
 				if (map[playerPos.Y][playerPos.X - 1]->isItemsInstance()) { //if it is an items instance
 
 					if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::HEAL) {
+
 						//heal up the player based on the hitpoints of the heal item
-						dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE3) {
+
+
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
 					}
 
+					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
 					updatePlayerLeft();
+					
 
 				}
 
@@ -261,7 +298,8 @@ void GameMap::movePlayer(Direction to) {
 	}
 
 		//update the direction for which the player object is facing
-		dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
+		player->setNewDirectionFacing(to);
+
 		//update the buffer
 		//this will get the surroundings of the character (distance is 2 blocks)
 		updateBuffer();

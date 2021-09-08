@@ -180,6 +180,9 @@ class Player : public Matter {
 
 		//it will return all the collectables from the bag
 		std::vector<Items*> getCollectedItems();
+		
+		//it will add the collected item into the bag
+		void addCollectedItem(Items* collectable);
 };
 
 class Slab :
