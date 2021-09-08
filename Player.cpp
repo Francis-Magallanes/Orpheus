@@ -80,6 +80,12 @@ Direction Player::getPlayerFacing() { return playerFacing; }
 
 int Player::getAttackDamage() { return attackDamage; }
 
+void Player::healUp(int amount) {
+	hitpoints = hitpoints + amount;
+}
+
+std::vector<Items*> Player::getCollectedItems() { return bag; }
+
 Player::~Player() {
 
 	delete[] sprite;

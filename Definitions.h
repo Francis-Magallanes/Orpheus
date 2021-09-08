@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 //dimensions of the screen resolution
 #define HEIGHT 720
@@ -30,6 +31,12 @@
 #define DARK 0x000000
 
 #define START_CHAR_SPRITES 23 //this is the start of the 0-9 and A-Z characters
+
+//this will check whether the object is a type of Items
+template<typename Base, typename T>
+inline bool instanceof(const T*) {
+	return std::is_base_of<Base, T>::value;
+}
 
 // this will distinguish the different type of slab and it characteristics
 // each type of slab will have a unique color, whether can be damage or not, and hitpoints
@@ -98,9 +105,39 @@ class Matter
 		uint32_t* getSprite() {
 			return sprite;
 		}
+
+		//by default, matter is not a item, and it can only changed by the items class
+		virtual bool isItemsInstance() {
+			return false;
+		}
+
 };
 
+//this will handle the different "non-essential" objects such as cerberus and heal
+class Items : public Matter {
 
+private:
+	TypeItems type;
+
+public:
+
+	//the 'type' will determine the type of the object.
+	//sprites will contain the different sprites that is used in the game
+	//At a specific index, it will return a unique sprite. Following are the index sprite needed by the Items class\
+		// 0-3 - different collectables
+		// 18 : Weapon
+		// 19 : Heal
+		// 20: Creep 1
+		// 21: Creep 2
+		// 22: Cerberus
+	Items(TypeItems type, uint32_t* sprites);
+
+	void absorbDamage(int damage);
+
+	TypeItems getType();
+
+	bool isItemsInstance();
+};
 
 class Player : public Matter {
 
@@ -111,6 +148,9 @@ class Player : public Matter {
 		uint32_t* PLAYER_SPRITE_RIGHT_1; // sprite for when the player facing to the right second version
 		uint32_t* PLAYER_SPRITE_LEFT_1; // sprite for when the player facing to the left
 		uint32_t* PLAYER_SPRITE_LEFT; //sprite for when the playyer facing to the left second version
+
+		//this will store all collected items
+		std::vector<Items*> bag;
 
 	public:
 		//Constructor
@@ -135,7 +175,11 @@ class Player : public Matter {
 		//this will get the value of attackDamage
 		int getAttackDamage();
 
+		//this will handle the healing up of the player 
+		void healUp(int amount);
 
+		//it will return all the collectables from the bag
+		std::vector<Items*> getCollectedItems();
 };
 
 class Slab :
@@ -167,60 +211,42 @@ class Slab :
 
 };
 
-//this will handle the different "non-essential" objects such as cerberus and heal
-class Items : public Matter {
-
-	private:
-		TypeItems type;
-
-	public:
-
-		//the 'type' will determine the type of the object.
-		//sprites will contain the different sprites that is used in the game
-		//At a specific index, it will return a unique sprite. Following are the index sprite needed by the Items class\
-		// 0-3 - different collectables
-		// 18 : Weapon
-		// 19 : Heal
-		// 20: Creep 1
-		// 21: Creep 2
-		// 22: Cerberus
-		Items(TypeItems type, uint32_t* sprites);
-
-		void absorbDamage(int damage);
-
-		TypeItems getType();
-		int getHitpoints();
-};
-
 
 class GameMap
 {
-private:
-	//this will contain the different objects inside the game map
-	// it is in two dimensional scheme for easier access of the objects
-	Matter*** map;
-	uint32_t* gamemapBuffer;
+	private:
+		//this will contain the different objects inside the game map
+		// it is in two dimensional scheme for easier access of the objects
+		Matter*** map;
+		uint32_t* gamemapBuffer;
 
-	uint32_t* sprites; //this will contain all the sprites needed for the game
+		uint32_t* sprites; //this will contain all the sprites needed for the game
 
-	uint32_t* sprites_alphanum; //this will contain all sprites needed for text
+		uint32_t* sprites_alphanum; //this will contain all sprites needed for text
 
-	Coordinate playerPos; // this will store the position of the player in the map
+		Coordinate playerPos; // this will store the position of the player in the map
 
-	//this will update the buffer when the player object moves
-	//this will get the surroundings of the character (distance is 2 blocks) for the display
-	void updateBuffer();
+		//this will update the buffer when the player object moves
+		//this will get the surroundings of the character (distance is 2 blocks) for the display
+		void updateBuffer();
 
-	//this will update the gamebar portion of the gamemap when the stats of the player is affected
-	void updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables);
+		//this will update the gamebar portion of the gamemap when the stats of the player is affected
+		void updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables);
 
-public:
-	GameMap(uint32_t* framebuffer);
+		//this will update the position of the player object in the game prid and also set black portion of the framebuffer depending
+		// on the update
+		void updatePlayerUp(); //update when the player will go up
+		void updatePlayerDown(); //update when the player will go down
+		void updatePlayerRight(); //update when the player will go right
+		void updatePlayerLeft(); //update when the player will go up
 
-	//this will handle on the one block movement of the player object depending of the inputted direction
-	void movePlayer(Direction to);
+	public:
+		GameMap(uint32_t* framebuffer);
 
-	//this will the attack action of the player object
-	void attackPlayer();
+		//this will handle on the one block movement of the player object depending of the inputted direction
+		void movePlayer(Direction to);
+
+		//this will the attack action of the player object
+		void attackPlayer();
 
 };
