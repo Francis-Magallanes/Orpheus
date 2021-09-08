@@ -1,7 +1,5 @@
 #include "Definitions.h"
 
-#include <stdlib.h>
-#include <iostream>
 
 //This will be one of the maze maps for the game
 //This indicates where the slab object to be placed with its type
@@ -16,7 +14,7 @@
 int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1},
-	{1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	1,	3,	3,	3,	-1,	1},
+	{1,	8,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	1,	3,	3,	3,	-1,	1},
 	{1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	1,	1,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
 	{1,	-1,	3,	7,	3,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	2,	2,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	6,	-1,	1},
 	{1,	-1,	-1,	3,	6,	-1,	2,	-1,	-1,	1,	2,	1,	7,	1,	1,	2,	1,	7,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
@@ -36,20 +34,22 @@ int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,	3,	3,	3,	3,	3,	3,	-1,	6,	-1,	-1,	-1,	-1,	-1,	1,	-1,	2,	3,	4,	3,	2,	-1,	1,	-1,	-1,	-1,	-1,	3,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1},
 	{1,	3,	3,	3,	3,	3,	3,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	2,	3,	3,	3,	2,	6,	1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1},
 	{1,	-1,	-1,	-1,	-1,	6,	-1,	6,	2,	2,	2,	2,	2,	2,	1,	-1,	2,	2,	2,	2,	2,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	-1, -1,	-1,	-1,	-1,	-1,	1},
-	{1,	4,	-1,	-1,	-1,	-1,	-1,	-1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	1,	-1,	1,	-1,	-1,	-1,	8,	1},
+	{1,	4,	-1,	-1,	-1,	-1,	-1,	-1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	3,	-1,	-1,	-1,	1,	5,	1,	-1,	-1,	-1,	8,	1},
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1}
 
 };
 
 GameMap::GameMap(uint32_t* framebuffer) {
 	
+	int collectable_counter = 1;
+
 	//initialize the game map buffer with black pixels
 	gamemapBuffer = framebuffer;
 
 	memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
 	
 	//load the sprites
-	cimg_library::CImg<unsigned char> all_sprites("assets/spritesheet.bmp");
+	cimg_library::CImg<unsigned char> all_sprites("assets/in_game_sprites.bmp");
 	uint8_t* all_sprites_pt = all_sprites.data();
 	sprites = new uint32_t[BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES)];
 	//putting the image into the sprite variable for wood slab
@@ -68,6 +68,28 @@ GameMap::GameMap(uint32_t* framebuffer) {
 
 		}
 	}
+
+	//retrieval of the alphanumeric sprites
+	sprites_alphanum = new uint32_t[ BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM)];
+	cimg_library::CImg<unsigned char> all_sprites_alphanum("assets/alphanum_sprites.bmp");
+	uint8_t* all_sprites_alphanum_pt = all_sprites_alphanum.data();
+	//putting the image into the sprite variable for wood slab
+	//putting the image into the sprite variable for wood slab
+	for (int y = 0; y < BLOCK_HEIGHT; y++) {
+
+		for (int x = 0; x < (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM); x++) {
+
+			// Get the RGB data
+			uint8_t r = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x];
+			uint8_t g = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + (BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM))];
+			uint8_t b = all_sprites_alphanum_pt[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + (2 * BLOCK_HEIGHT * (BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM))];
+
+			//transfer it 
+			sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x] = (r << 16) + (g << 8) + b;
+
+		}
+	}
+
 
 	//initialize the game map with MAZE_1
 	map = new Matter ** [MAP_HEIGHT];
@@ -89,20 +111,26 @@ GameMap::GameMap(uint32_t* framebuffer) {
 				map[i][j] = new Slab(TypeSlab::WOOD, sprites);
 			}
 			else if (MAZE_1[i][j] == 4) {
-				//TODO: adjust for the collectable object
-				map[i][j] = NULL;
+				//instantiate collectable object
+				map[i][j] = new Items(static_cast<TypeItems> (collectable_counter++), sprites);
+			}
+			else if (MAZE_1[i][j] == 5) {
+				//instantiate the cerberus object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (5), sprites);
+
 			}
 			else if (MAZE_1[i][j] == 6) {
-				//TODO: adjust for the heal object
-				map[i][j] = NULL;
+				//instantiate heal object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (6), sprites);
+			
 			}
 			else if (MAZE_1[i][j] == 7) {
-				//TODO: adjust for the trap object
-				map[i][j] = NULL;
+				//instantiate creep object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (7), sprites);
 			}
 			else if (MAZE_1[i][j] == 8) {
-				//TODO: adjust for the weapon object
-				map[i][j] = NULL;
+				//instantiate weapon object via the Items class
+				map[i][j] = new Items(static_cast<TypeItems> (8), sprites);
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in
@@ -112,14 +140,19 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	}
 		
 	//Place the player in the map at (1,1)
-	playerPos.X = 0;
-	playerPos.Y = 20;
+	playerPos.X = 3;
+	playerPos.Y = 11;
 	map[playerPos.Y][playerPos.X] = new Player(sprites);
 	
 	updateBuffer();
 
-}
+	std::vector <Items *> collectables;
+	collectables.push_back(new Items(static_cast<TypeItems>(1), sprites));
+	collectables.push_back(new Items(static_cast<TypeItems>(2), sprites));
+	collectables.push_back(new Items(static_cast<TypeItems>(3), sprites));
 
+	updateGameBar(100, 100, collectables);
+}
 
 void GameMap::movePlayer(Direction to) {
 
@@ -407,3 +440,48 @@ void GameMap::attackPlayer() {
 
 	updateBuffer();
 }
+
+void GameMap::updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables) {
+	
+	//clear the gamebar part
+	memset(gamemapBuffer, LIGHT, 30 * WIDTH * sizeof(uint32_t));
+
+	std::string string_display = "health:" + std::to_string(playerHitpoints) + " weapon health:" + std::to_string(weaponHitpoints) + " items:";
+	
+	//display the PlayerHitsPoints, weapon health
+	for (int i = 0; i < string_display.length(); i++) {
+
+		//this "light up" the surrondings of the player
+		for (int y = 0; y < BLOCK_HEIGHT; y++) {
+
+			for (int x = 0; x < BLOCK_WIDTH; x++) {
+
+				if (isdigit(string_display.at(i))) { //for the case when the number is a digit
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (string_display.at(i) - '0')];
+				}
+				else if (string_display.at(i) == ' ') {
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = LIGHT;
+				}
+				else if (string_display.at(i) == ':') { //for the colon. It can be found at the last portion of the sprites for alphanum
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (NUMBER_SPRITES_ALPHANUM - 1)];
+				}
+				else {//for the letters
+					gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (10 + string_display.at(i) - 'a')];
+				}
+				
+
+			}
+		}
+
+	}
+
+	//for the collected items
+	for (int i = 0; i < collectables.size(); i++) 
+		for (int y = 0; y < BLOCK_HEIGHT; y++)
+			for (int x = 0; x < BLOCK_WIDTH; x++)
+				//start the end of the items portion of the gamebar
+				gamemapBuffer[WIDTH * y + x + (BLOCK_WIDTH * i) + (string_display.length() * BLOCK_WIDTH)] = collectables.at(i)->getSprite()[(BLOCK_WIDTH * NUMBER_SPRITES) * y + x];
+	
+
+}
+

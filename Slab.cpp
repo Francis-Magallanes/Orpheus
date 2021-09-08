@@ -19,6 +19,7 @@ Slab::Slab(TypeSlab type, uint32_t* sprites) {
 
 		case TypeSlab::DIAMOND:
 			sprite = DIAMOND_SPRITE;
+			hitpoints = 1;
 			break;
 			
 
@@ -35,6 +36,8 @@ Slab::Slab(TypeSlab type, uint32_t* sprites) {
 
 		default:
 			sprite = DIAMOND_SPRITE;
+			hitpoints = 1;
+			break;
 	}
 
 }

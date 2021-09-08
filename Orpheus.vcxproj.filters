@@ -27,6 +27,9 @@
     <ClCompile Include="Slab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Items.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\CImg.h">
