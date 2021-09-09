@@ -49,11 +49,11 @@ void Player::setNewDirectionFacing(Direction newDir) {
 					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
 			}
 			else {
-				if (sprite == PLAYER_SPRITE_LEFT)
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
 					sprite = PLAYER_SPRITE_LEFT_1;
-				else if (sprite == PLAYER_SPRITE_LEFT_1)
+				else if (sprite == PLAYER_SPRITE_LEFT_1_WEAPON || sprite == PLAYER_SPRITE_LEFT_1)
 					sprite = PLAYER_SPRITE_LEFT;
-				else if (sprite == PLAYER_SPRITE_RIGHT)
+				else if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
 					sprite = PLAYER_SPRITE_RIGHT_1;
 				else
 					sprite = PLAYER_SPRITE_RIGHT;
@@ -74,11 +74,11 @@ void Player::setNewDirectionFacing(Direction newDir) {
 					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
 			}
 			else {
-				if (sprite == PLAYER_SPRITE_LEFT)
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
 					sprite = PLAYER_SPRITE_LEFT_1;
-				else if (sprite == PLAYER_SPRITE_LEFT_1)
+				else if (sprite == PLAYER_SPRITE_LEFT_1_WEAPON || sprite == PLAYER_SPRITE_LEFT_1)
 					sprite = PLAYER_SPRITE_LEFT;
-				else if (sprite == PLAYER_SPRITE_RIGHT)
+				else if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
 					sprite = PLAYER_SPRITE_RIGHT_1;
 				else
 					sprite = PLAYER_SPRITE_RIGHT;
@@ -95,7 +95,7 @@ void Player::setNewDirectionFacing(Direction newDir) {
 					sprite = PLAYER_SPRITE_LEFT_WEAPON;
 			}
 			else {
-				if (sprite == PLAYER_SPRITE_LEFT)
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
 					sprite = PLAYER_SPRITE_LEFT_1;
 				else
 					sprite = PLAYER_SPRITE_LEFT;
@@ -112,7 +112,7 @@ void Player::setNewDirectionFacing(Direction newDir) {
 					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
 			}
 			else {
-				if (sprite == PLAYER_SPRITE_RIGHT)
+				if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
 					sprite = PLAYER_SPRITE_RIGHT_1;
 				else
 					sprite = PLAYER_SPRITE_RIGHT;
@@ -179,6 +179,12 @@ void Player::equipWeapon(Items* item) {
 
 bool Player::isEquipWeapon() {
 	return weapon != nullptr;
+}
+
+void Player::disarmWeapon() {
+	
+	delete weapon;
+	weapon = nullptr;
 }
 
 Player::~Player() {

@@ -201,6 +201,9 @@ class Player : public Matter {
 
 		//this will return whether the player is equiped with the weapon
 		bool isEquipWeapon();
+
+		//this will disarm the player from its weapon
+		void disarmWeapon();
 };
 
 class Slab :

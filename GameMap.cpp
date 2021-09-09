@@ -16,7 +16,7 @@ int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1},
 	{1,	8,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	1,	3,	3,	3,	-1,	1},
 	{1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	1,	1,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
-	{1,	-1,	3,	7,	3,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	2,	2,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	6,	-1,	1},
+	{1,	-1,	3,	7,	3,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	4,	2,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	6,	-1,	1},
 	{1,	-1,	-1,	3,	6,	-1,	2,	-1,	-1,	1,	2,	1,	7,	1,	1,	2,	1,	7,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
 	{1,	-1,	-1,	-1,	-1,	2,	7,	2,	-1,	-1,	2,	1,	2,	2,	2,	2,	1,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	3,	3,	1,	-1,	-1,	1},
 	{1,	-1,	-1,	3,	-1,	-1,	2,	-1,	-1,	-1,	2,	1,	1,	1,	1,	1,	1,	2,	1,	-1,	-1,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	-1,	-1,	1,	2,	1,	1,	-1,	6,	1},
@@ -176,6 +176,9 @@ void GameMap::movePlayer(Direction to) {
 
 						//heal up the player based on the hitpoints of the heal item
 						player->healUp(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]);
 					}
 					//for the collectables
 					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
@@ -197,6 +200,7 @@ void GameMap::movePlayer(Direction to) {
 						//damage the player
 						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
 					}
+
 
 					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerDown();
@@ -227,6 +231,9 @@ void GameMap::movePlayer(Direction to) {
 						
 						//heal up the player based on the hitpoints of the heal item
 						player->healUp(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]);
 					}
 					//for the collectable
 					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
@@ -273,6 +280,9 @@ void GameMap::movePlayer(Direction to) {
 						//heal up the player based on the hitpoints of the heal item
 						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
 
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y][playerPos.X+1]);
+
 					}
 					//for the collectables
 					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE1 ||
@@ -317,6 +327,9 @@ void GameMap::movePlayer(Direction to) {
 
 						//heal up the player based on the hitpoints of the heal item
 						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]);
 					}
 					//for the collectables
 					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE1 ||
@@ -362,25 +375,46 @@ void GameMap::movePlayer(Direction to) {
 		//the player will attack only one block in front of what he is facing
 		Direction currFacing = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getPlayerFacing();
 		int playerAD = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getAttackDamage();
+		Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
 
 		if (currFacing == Direction::UP) {
 
-			//deal damage to the object 
-			if (map[playerPos.Y - 1][playerPos.X]) {
+			//deal damage to the object if there is an object and player has a weapon
+			if (map[playerPos.Y - 1][playerPos.X] && player->isEquipWeapon()) {
 
 				map[playerPos.Y - 1][playerPos.X]->absorbDamage(playerAD);
 
-				if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0)
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
+
+				if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0) {
 					delete map[playerPos.Y - 1][playerPos.X]; //this signifies that the object is destroyed
-				map[playerPos.Y - 1][playerPos.X] = NULL;
+					map[playerPos.Y - 1][playerPos.X] = NULL;
+				}
+					
 
 			}
 		}
 		else if (currFacing == Direction::DOWN) {
-			//deal damage to the object 
-			if (map[playerPos.Y + 1][playerPos.X]) {
+			//deal damage to the object if there is object and the player is equipped with weapon
+			if (map[playerPos.Y + 1][playerPos.X] && player->isEquipWeapon()) {
 
 				map[playerPos.Y + 1][playerPos.X]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
 
 				if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0) {
 					delete map[playerPos.Y + 1][playerPos.X]; //this signifies that the object is destroyed
@@ -392,10 +426,19 @@ void GameMap::movePlayer(Direction to) {
 
 		}
 		else if (currFacing == Direction::RIGHT) {
-			//deal damage to the object 
-			if (map[playerPos.Y][playerPos.X + 1]) {
+			//deal damage to the object if there is an object and the player is equipped with weapon
+			if (map[playerPos.Y][playerPos.X + 1] && player->isEquipWeapon()) {
 
 				map[playerPos.Y][playerPos.X + 1]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
 
 				if (map[playerPos.Y][playerPos.X + 1]->getHitpoints() <= 0) {
 					delete map[playerPos.Y][playerPos.X + 1]; //this signifies that the object is destroyed
@@ -405,10 +448,19 @@ void GameMap::movePlayer(Direction to) {
 			}
 		}
 		else if (currFacing == Direction::LEFT) {
-			//deal damage to the object 
-			if (map[playerPos.Y][playerPos.X - 1]) {
+			//deal damage to the object if there is an object and the player is equipped with weapon
+			if (map[playerPos.Y][playerPos.X - 1] && player->isEquipWeapon()) {
 
 				map[playerPos.Y][playerPos.X - 1]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
 
 				if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0) {
 					delete map[playerPos.Y][playerPos.X - 1]; //this signifies that the object is destroyed
@@ -419,10 +471,9 @@ void GameMap::movePlayer(Direction to) {
 
 		}
 
+		updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 		updateBuffer();
 	}
-
-
 
 void GameMap::updatePlayerDown() {
 		//this will get the sprite of the object before updating
@@ -612,7 +663,7 @@ void GameMap::updateGameBar(int playerHitpoints, int weaponHitpoints, std::vecto
 	//clear the gamebar part
 	memset(gamemapBuffer, LIGHT, 30 * WIDTH * sizeof(uint32_t));
 
-	std::string string_display = "health:" + std::to_string(playerHitpoints) + " weapon health:" + std::to_string(weaponHitpoints) + " items:";
+	std::string string_display = "health:" + std::to_string(playerHitpoints) + " wc:" + std::to_string(weaponHitpoints) + " items:";
 	
 	//display the PlayerHitsPoints, weapon health
 	for (int i = 0; i < string_display.length(); i++) {
