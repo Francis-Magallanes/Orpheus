@@ -33,6 +33,7 @@ Player::Player(uint32_t* sprites) {
 void Player::setNewDirectionFacing(Direction newDir) {
 	playerFacing = newDir;
 	
+	//update the player sprite to be displayed accordingly
 	switch (newDir) {
 
 		case Direction::UP:
@@ -127,7 +128,7 @@ void Player::setNewDirectionFacing(Direction newDir) {
 
 
 void Player::absorbDamage(int damage) {
-
+	hitpoints = hitpoints - damage;
 }
 
 Direction Player::getPlayerFacing() { return playerFacing; }

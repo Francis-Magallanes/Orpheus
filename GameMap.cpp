@@ -116,21 +116,21 @@ GameMap::GameMap(uint32_t* framebuffer) {
 			}
 			else if (MAZE_1[i][j] == 5) {
 				//instantiate the cerberus object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (5), sprites);
+				map[i][j] = new Items(TypeItems::CERBERUS, sprites);
 
 			}
 			else if (MAZE_1[i][j] == 6) {
 				//instantiate heal object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (6), sprites);
+				map[i][j] = new Items(TypeItems::HEAL, sprites);
 			
 			}
 			else if (MAZE_1[i][j] == 7) {
 				//instantiate creep object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (7), sprites);
+				map[i][j] = new Items(TypeItems::CREEP, sprites);
 			}
 			else if (MAZE_1[i][j] == 8) {
 				//instantiate weapon object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (8), sprites);
+				map[i][j] = new Items(TypeItems::WEAPON, sprites);
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in
@@ -191,6 +191,12 @@ void GameMap::movePlayer(Direction to) {
 						//pick up the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
 					}
+					//for when player pass through the creeps
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::CREEP) {
+
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
+					}
 
 					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerDown();
@@ -236,7 +242,12 @@ void GameMap::movePlayer(Direction to) {
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
 					}
+					//for when the player steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::CREEP) {
 
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+					}
 					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerUp();
 				}
@@ -277,7 +288,12 @@ void GameMap::movePlayer(Direction to) {
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
 					}
+					//for when the player steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::CREEP) {
 
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
+					}
 					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerRight();
 				}
@@ -316,7 +332,12 @@ void GameMap::movePlayer(Direction to) {
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
 					}
+					//for when the playe steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::CREEP) {
 
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+					}
 					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerLeft();
 					

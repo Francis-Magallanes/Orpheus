@@ -27,7 +27,7 @@ Items::Items(TypeItems type, uint32_t* sprites) {
 			hitpoints = 20; //hitspoints for heal will be used as basis on the number of heal will happen
 			break;
 		case TypeItems::CREEP:
-			sprite = sprites + (BLOCK_WIDTH * 19);
+			sprite = sprites + (BLOCK_WIDTH * 20);
 			hitpoints = 20; //this will also the basis for the damage that player will receive
 			break;
 		case TypeItems::CERBERUS:
