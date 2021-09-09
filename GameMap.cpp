@@ -134,7 +134,7 @@ GameMap::GameMap(uint32_t* framebuffer) {
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in
-				map[i][j] = NULL;
+				map[i][j] = nullptr;
 			}
 			
 	}
@@ -143,10 +143,11 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	playerPos.X = 3;
 	playerPos.Y = 11;
 	map[playerPos.Y][playerPos.X] = new Player(sprites);
-	
+	Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
+
 	updateBuffer();
 
-	updateGameBar(100, 100, dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getCollectedItems());
+	updateGameBar(player->getHitpoints(), player->isEquipWeapon()? player->getWeapon()->getHitpoints() : 0 , player->getCollectedItems());
 }
 
 void GameMap::movePlayer(Direction to) {
@@ -169,6 +170,8 @@ void GameMap::movePlayer(Direction to) {
 			if (map[playerPos.Y + 1][playerPos.X]->isItemsInstance()) {//and that object is an items objects
 
 				if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() != TypeItems::CERBERUS) {//make sure it is not a cerberus
+					
+					//for the heal
 					if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::HEAL) {
 
 						//heal up the player based on the hitpoints of the heal item
@@ -182,8 +185,14 @@ void GameMap::movePlayer(Direction to) {
 						//add the item to bag of the player object
 						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
 					}
+					//for the getting the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::WEAPON) {
 
-					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
+						//pick up the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
+					}
+
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerDown();
 					
 				}
@@ -221,8 +230,14 @@ void GameMap::movePlayer(Direction to) {
 						//add item to the player
 						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
 					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::WEAPON) {
 
-					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
+					}
+
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerUp();
 				}
 			}
@@ -240,6 +255,8 @@ void GameMap::movePlayer(Direction to) {
 
 				if (map[playerPos.Y][playerPos.X + 1]->isItemsInstance()) {//if it is an Items instance
 
+
+					//for the heal
 					if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::HEAL) {
 
 						//heal up the player based on the hitpoints of the heal item
@@ -254,8 +271,14 @@ void GameMap::movePlayer(Direction to) {
 						//add item to player
 						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
 					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::WEAPON) {
 
-					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
+					}
+
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerRight();
 				}
 
@@ -284,11 +307,17 @@ void GameMap::movePlayer(Direction to) {
 						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE2 ||
 						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE3) {
 
-
+						//add the collected item
 						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
 					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::WEAPON) {
 
-					updateGameBar(player->getHitpoints(), 100, player->getCollectedItems());
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
+					}
+
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
 					updatePlayerLeft();
 					
 

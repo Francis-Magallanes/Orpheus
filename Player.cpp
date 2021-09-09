@@ -12,7 +12,12 @@ Player::Player(uint32_t* sprites) {
 	PLAYER_SPRITE_LEFT = sprites + (BLOCK_WIDTH * 12);
 	PLAYER_SPRITE_LEFT_1 = PLAYER_SPRITE_LEFT + BLOCK_WIDTH;
 	
-	//TODO: Add sprites for the player with weapon
+	//for the player with weapon
+	PLAYER_SPRITE_RIGHT_WEAPON = sprites + (BLOCK_WIDTH * 14);
+	PLAYER_SPRITE_RIGHT_1_WEAPON = PLAYER_SPRITE_RIGHT_WEAPON + BLOCK_WIDTH;
+	PLAYER_SPRITE_LEFT_WEAPON = sprites + (BLOCK_WIDTH * 16);
+	PLAYER_SPRITE_LEFT_1_WEAPON = PLAYER_SPRITE_LEFT_WEAPON + BLOCK_WIDTH;
+
 
 	hitpoints = 100;
 	attackDamage = 20;
@@ -21,6 +26,7 @@ Player::Player(uint32_t* sprites) {
 	playerFacing = Direction::RIGHT;
 	sprite = PLAYER_SPRITE_RIGHT;
 
+	weapon = nullptr;
 	
 }
 
@@ -30,39 +36,87 @@ void Player::setNewDirectionFacing(Direction newDir) {
 	switch (newDir) {
 
 		case Direction::UP:
-			if (sprite == PLAYER_SPRITE_LEFT)
-				sprite = PLAYER_SPRITE_LEFT_1;
-			else if (sprite == PLAYER_SPRITE_LEFT_1)
-				sprite = PLAYER_SPRITE_LEFT;
-			else if (sprite == PLAYER_SPRITE_RIGHT)
-				sprite = PLAYER_SPRITE_RIGHT_1;
-			else
-				sprite = PLAYER_SPRITE_RIGHT;
+
+			if (isEquipWeapon()) {
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1_WEAPON;
+				else if (sprite == PLAYER_SPRITE_LEFT_1_WEAPON || sprite == PLAYER_SPRITE_LEFT_1)
+					sprite = PLAYER_SPRITE_LEFT_WEAPON;
+				else if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1_WEAPON;
+				else
+					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
+			}
+			else {
+				if (sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1;
+				else if (sprite == PLAYER_SPRITE_LEFT_1)
+					sprite = PLAYER_SPRITE_LEFT;
+				else if (sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1;
+				else
+					sprite = PLAYER_SPRITE_RIGHT;
+			}
+			
 			break;
 
 		case Direction::DOWN:
-			if (sprite == PLAYER_SPRITE_LEFT)
-				sprite = PLAYER_SPRITE_LEFT_1;
-			else if (sprite == PLAYER_SPRITE_LEFT_1)
-				sprite = PLAYER_SPRITE_LEFT;
-			else if (sprite == PLAYER_SPRITE_RIGHT)
-				sprite = PLAYER_SPRITE_RIGHT_1;
-			else
-				sprite = PLAYER_SPRITE_RIGHT;
+
+			if (isEquipWeapon()) {
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1_WEAPON;
+				else if (sprite == PLAYER_SPRITE_LEFT_1_WEAPON || sprite == PLAYER_SPRITE_LEFT_1)
+					sprite = PLAYER_SPRITE_LEFT_WEAPON;
+				else if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1_WEAPON;
+				else
+					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
+			}
+			else {
+				if (sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1;
+				else if (sprite == PLAYER_SPRITE_LEFT_1)
+					sprite = PLAYER_SPRITE_LEFT;
+				else if (sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1;
+				else
+					sprite = PLAYER_SPRITE_RIGHT;
+			}
+			
 			break;
 
 		case Direction::LEFT:
-			if (sprite == PLAYER_SPRITE_LEFT)
-				sprite = PLAYER_SPRITE_LEFT_1;
-			else
-				sprite = PLAYER_SPRITE_LEFT;
+			
+			if (isEquipWeapon()) {
+				if (sprite == PLAYER_SPRITE_LEFT_WEAPON || sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1_WEAPON;
+				else
+					sprite = PLAYER_SPRITE_LEFT_WEAPON;
+			}
+			else {
+				if (sprite == PLAYER_SPRITE_LEFT)
+					sprite = PLAYER_SPRITE_LEFT_1;
+				else
+					sprite = PLAYER_SPRITE_LEFT;
+			}
+			
 			break;
 
 		case Direction::RIGHT:
-			if (sprite == PLAYER_SPRITE_RIGHT)
-				sprite = PLAYER_SPRITE_RIGHT_1;
-			else
-				sprite = PLAYER_SPRITE_RIGHT;
+
+			if (isEquipWeapon()) {
+				if (sprite == PLAYER_SPRITE_RIGHT_WEAPON || sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1_WEAPON;
+				else
+					sprite = PLAYER_SPRITE_RIGHT_WEAPON;
+			}
+			else {
+				if (sprite == PLAYER_SPRITE_RIGHT)
+					sprite = PLAYER_SPRITE_RIGHT_1;
+				else
+					sprite = PLAYER_SPRITE_RIGHT;
+			}
+			
 			break;
 
 		default:
@@ -95,6 +149,35 @@ void Player::addCollectedItem(Items* collectable) {
 		collectable->getType() == TypeItems::COLLECTABLE3) {
 		bag.push_back(collectable);
 	}
+}
+
+Items* Player::getWeapon() {
+	return weapon;
+}
+
+void Player::equipWeapon(Items* item) {
+
+	//equip only when the item is type of weapon
+	if (item->getType() == TypeItems::WEAPON) {
+
+		if (!isEquipWeapon()) { //for equiping if the player is not equipped 
+
+			weapon = item;
+		}
+		else { //for equippng if the player is already equipped
+
+			//delete the current object of the weapon
+			delete weapon;
+
+			//and replace it with the new one
+			weapon = item;
+		}
+
+	}
+}
+
+bool Player::isEquipWeapon() {
+	return weapon != nullptr;
 }
 
 Player::~Player() {

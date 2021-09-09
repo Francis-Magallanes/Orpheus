@@ -28,7 +28,7 @@ Items::Items(TypeItems type, uint32_t* sprites) {
 			break;
 		case TypeItems::CREEP:
 			sprite = sprites + (BLOCK_WIDTH * 19);
-			hitpoints = 100;
+			hitpoints = 20; //this will also the basis for the damage that player will receive
 			break;
 		case TypeItems::CERBERUS:
 			sprite = sprites + (BLOCK_WIDTH * 22);
@@ -40,6 +40,7 @@ Items::Items(TypeItems type, uint32_t* sprites) {
 			break;
 	}
 }
+
 
 void Items::absorbDamage(int damage) {
 	hitpoints = hitpoints - damage;

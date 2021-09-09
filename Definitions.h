@@ -146,11 +146,20 @@ class Player : public Matter {
 		int attackDamage;
 		uint32_t* PLAYER_SPRITE_RIGHT; // sprite for when the player facing to the right
 		uint32_t* PLAYER_SPRITE_RIGHT_1; // sprite for when the player facing to the right second version
-		uint32_t* PLAYER_SPRITE_LEFT_1; // sprite for when the player facing to the left
-		uint32_t* PLAYER_SPRITE_LEFT; //sprite for when the playyer facing to the left second version
+		uint32_t* PLAYER_SPRITE_LEFT; // sprite for when the player facing to the left
+		uint32_t* PLAYER_SPRITE_LEFT_1; //sprite for when the playyer facing to the left second version
+
+		//player sprites with weapon
+		uint32_t* PLAYER_SPRITE_RIGHT_WEAPON; // sprite for when the player facing to the right
+		uint32_t* PLAYER_SPRITE_RIGHT_1_WEAPON; // sprite for when the player facing to the right second version
+		uint32_t* PLAYER_SPRITE_LEFT_WEAPON; // sprite for when the player facing to the left
+		uint32_t* PLAYER_SPRITE_LEFT_1_WEAPON; //sprite for when the playyer facing to the left second version
 
 		//this will store all collected items
 		std::vector<Items*> bag;
+
+		//this is for weapon
+		Items* weapon;
 
 	public:
 		//Constructor
@@ -174,6 +183,9 @@ class Player : public Matter {
 
 		//this will get the value of attackDamage
 		int getAttackDamage();
+		
+		//this will get the weapon object equipped with the player
+		Items* getWeapon();
 
 		//this will handle the healing up of the player 
 		void healUp(int amount);
@@ -183,6 +195,12 @@ class Player : public Matter {
 		
 		//it will add the collected item into the bag
 		void addCollectedItem(Items* collectable);
+
+		//it will equip the weapon to the player
+		void equipWeapon(Items* item);
+
+		//this will return whether the player is equiped with the weapon
+		bool isEquipWeapon();
 };
 
 class Slab :
