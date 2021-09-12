@@ -145,13 +145,7 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	map[playerPos.Y][playerPos.X] = new Player(sprites);
 	
 	updateBuffer();
-
-	std::vector <Items *> collectables;
-	collectables.push_back(new Items(static_cast<TypeItems>(1), sprites));
-	collectables.push_back(new Items(static_cast<TypeItems>(2), sprites));
-	collectables.push_back(new Items(static_cast<TypeItems>(3), sprites));
-
-	updateGameBar(100, 100, collectables);
+	updateGameBar(player->getHitpoints(), player->isEquipWeapon()? player->getWeapon()->getHitpoints() : 0 , player->getCollectedItems());
 }
 
 void GameMap::movePlayer(Direction to) {
@@ -162,8 +156,323 @@ void GameMap::movePlayer(Direction to) {
 		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y + 1][playerPos.X]) {
 
-			//this will get the sprite of the object before updating
-			uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
+			updatePlayerDown();
+
+		}
+
+		// or if the next position contains an item object (collectables, heal, and weapons)
+		if (map[playerPos.Y + 1][playerPos.X]) { //if there is object
+
+			if (map[playerPos.Y + 1][playerPos.X]->isItemsInstance()) {//and that object is an items objects
+
+				if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() != TypeItems::CERBERUS) {//make sure it is not a cerberus
+					
+					//for the heal
+					if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::HEAL) {
+
+						//heal up the player based on the hitpoints of the heal item
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]);
+					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add the item to bag of the player object
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
+					}
+					//for the getting the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::WEAPON) {
+
+						//pick up the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
+					}
+					//for when player pass through the creeps
+					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::CREEP) {
+
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getHitpoints());
+					}
+
+
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
+					updatePlayerDown();
+					
+				}
+				else {
+					//do something for the cerberus
+
+				}
+
+			}
+
+		}
+	}
+	else if (to == Direction::UP and playerPos.Y - 1 >= 0) {
+
+			//if the player will move towards a empty space in the map (or null value in the map variable) and within provided space
+			if (!map[playerPos.Y - 1][playerPos.X]) {
+				updatePlayerUp();
+			}
+
+			// or if the next position contains an item object (collectables, heal, and weapons)
+			if (map[playerPos.Y - 1][playerPos.X]) { //whether there is an object
+				if (map[playerPos.Y - 1][playerPos.X]->isItemsInstance()) {// whether that object is items instance
+
+					//do the heal effect
+					if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::HEAL) {
+						
+						//heal up the player based on the hitpoints of the heal item
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]);
+					}
+					//for the collectable
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add item to the player
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
+					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::WEAPON) {
+
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
+					}
+					//for when the player steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::CREEP) {
+
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getHitpoints());
+					}
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
+					updatePlayerUp();
+				}
+			}
+
+	}
+	else if (to == Direction::RIGHT and playerPos.X + 1 < MAP_WIDTH) {
+
+			//if the player will move towards a empty space in the map (or null value in the map variable) and within provided space
+			if (!map[playerPos.Y][playerPos.X + 1]) {
+				updatePlayerRight();
+			}
+
+			// or if the next position contains an item object (collectables, heal, and weapons)
+			if (map[playerPos.Y][playerPos.X + 1]) {//if there is an object
+
+				if (map[playerPos.Y][playerPos.X + 1]->isItemsInstance()) {//if it is an Items instance
+
+
+					//for the heal
+					if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::HEAL) {
+
+						//heal up the player based on the hitpoints of the heal item
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y][playerPos.X+1]);
+
+					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::COLLECTABLE3) {
+						
+						//add item to player
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
+					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::WEAPON) {
+
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
+					}
+					//for when the player steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::CREEP) {
+
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getHitpoints());
+					}
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
+					updatePlayerRight();
+				}
+
+			}
+	}
+	else if (playerPos.X - 1 >= 0) {
+
+			//for the left move
+			//if the player will move towards a empty space in the map (or null value in the map variable) and within provided space
+			if (!map[playerPos.Y][playerPos.X - 1]) {
+				updatePlayerLeft();
+			}
+
+			// or if the next position contains an item object (collectables, heal, and weapons)
+			if (map[playerPos.Y][playerPos.X - 1]) {//if there is an object
+
+				if (map[playerPos.Y][playerPos.X - 1]->isItemsInstance()) { //if it is an items instance
+
+					if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::HEAL) {
+
+						//heal up the player based on the hitpoints of the heal item
+						player->healUp(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+
+						//delete the object since it will not be used anymore
+						delete dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]);
+					}
+					//for the collectables
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE1 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE2 ||
+						dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::COLLECTABLE3) {
+
+						//add the collected item
+						player->addCollectedItem(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
+					}
+					//for the weapon
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::WEAPON) {
+
+						//pickup the weapon
+						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
+					}
+					//for when the playe steps on the creep
+					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::CREEP) {
+
+						//damage the player
+						player->absorbDamage(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getHitpoints());
+					}
+					updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
+					updatePlayerLeft();
+					
+
+				}
+
+			}
+	}
+
+		//update the direction for which the player object is facing
+		player->setNewDirectionFacing(to);
+
+		//update the buffer
+		//this will get the surroundings of the character (distance is 2 blocks)
+		updateBuffer();
+
+}
+
+	void GameMap::attackPlayer() {
+
+		//the player will attack only one block in front of what he is facing
+		Direction currFacing = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getPlayerFacing();
+		int playerAD = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getAttackDamage();
+		Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
+
+		if (currFacing == Direction::UP) {
+
+			//deal damage to the object if there is an object and player has a weapon
+			if (map[playerPos.Y - 1][playerPos.X] && player->isEquipWeapon()) {
+
+				map[playerPos.Y - 1][playerPos.X]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
+
+				if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0) {
+					delete map[playerPos.Y - 1][playerPos.X]; //this signifies that the object is destroyed
+					map[playerPos.Y - 1][playerPos.X] = NULL;
+				}
+					
+
+			}
+		}
+		else if (currFacing == Direction::DOWN) {
+			//deal damage to the object if there is object and the player is equipped with weapon
+			if (map[playerPos.Y + 1][playerPos.X] && player->isEquipWeapon()) {
+
+				map[playerPos.Y + 1][playerPos.X]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
+
+				if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0) {
+					delete map[playerPos.Y + 1][playerPos.X]; //this signifies that the object is destroyed
+					map[playerPos.Y + 1][playerPos.X] = NULL;
+				}
+
+
+			}
+
+		}
+		else if (currFacing == Direction::RIGHT) {
+			//deal damage to the object if there is an object and the player is equipped with weapon
+			if (map[playerPos.Y][playerPos.X + 1] && player->isEquipWeapon()) {
+
+				map[playerPos.Y][playerPos.X + 1]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
+
+				if (map[playerPos.Y][playerPos.X + 1]->getHitpoints() <= 0) {
+					delete map[playerPos.Y][playerPos.X + 1]; //this signifies that the object is destroyed
+					map[playerPos.Y][playerPos.X + 1] = NULL;
+				}
+
+			}
+		}
+		else if (currFacing == Direction::LEFT) {
+			//deal damage to the object if there is an object and the player is equipped with weapon
+			if (map[playerPos.Y][playerPos.X - 1] && player->isEquipWeapon()) {
+
+				map[playerPos.Y][playerPos.X - 1]->absorbDamage(playerAD);
+
+				//apply damage to the weapon
+				player->getWeapon()->absorbDamage(1);
+
+				//disarm the the player if the weapon is equal to zero or below zero
+				if (player->getWeapon()->getHitpoints() <= 0) {
+					player->disarmWeapon();
+				}
+
+
+				if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0) {
+					delete map[playerPos.Y][playerPos.X - 1]; //this signifies that the object is destroyed
+					map[playerPos.Y][playerPos.X - 1] = NULL;
+				}
+
+			}
+
+		}
+
+		updateGameBar(player->getHitpoints(), player->isEquipWeapon() ? player->getWeapon()->getHitpoints() : 0, player->getCollectedItems());
+		updateBuffer();
+	}
+
+void GameMap::updatePlayerDown() {
+		//this will get the sprite of the object before updating
+		uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
 
 			//this will move the player in game map array
 			map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
