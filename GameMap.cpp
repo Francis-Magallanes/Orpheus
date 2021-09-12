@@ -16,7 +16,7 @@ int MAZE_1[MAP_HEIGHT][MAP_WIDTH] = {
 	{1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1,	1},
 	{1,	8,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	2,	2,	2,	2,	2,	1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	1,	3,	3,	3,	-1,	1},
 	{1,	-1,	-1,	3,	-1,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	1,	1,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
-	{1,	-1,	3,	7,	3,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	2,	2,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	6,	-1,	1},
+	{1,	-1,	3,	7,	3,	-1,	-1,	-1,	-1,	1,	2,	1,	2,	1,	4,	2,	1,	2,	1,	-1,	-1,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	3,	-1,	-1,	1,	1,	3,	1,	6,	-1,	1},
 	{1,	-1,	-1,	3,	6,	-1,	2,	-1,	-1,	1,	2,	1,	7,	1,	1,	2,	1,	7,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	6,	-1,	-1,	-1,	-1,	1,	1,	3,	1,	-1,	-1,	1},
 	{1,	-1,	-1,	-1,	-1,	2,	7,	2,	-1,	-1,	2,	1,	2,	2,	2,	2,	1,	2,	1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	7,	-1,	-1,	-1,	-1,	-1,	-1,	-1,	1,	3,	3,	1,	-1,	-1,	1},
 	{1,	-1,	-1,	3,	-1,	-1,	2,	-1,	-1,	-1,	2,	1,	1,	1,	1,	1,	1,	2,	1,	-1,	-1,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	2,	-1,	-1,	1,	2,	1,	1,	-1,	6,	1},
@@ -116,25 +116,25 @@ GameMap::GameMap(uint32_t* framebuffer) {
 			}
 			else if (MAZE_1[i][j] == 5) {
 				//instantiate the cerberus object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (5), sprites);
+				map[i][j] = new Items(TypeItems::CERBERUS, sprites);
 
 			}
 			else if (MAZE_1[i][j] == 6) {
 				//instantiate heal object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (6), sprites);
+				map[i][j] = new Items(TypeItems::HEAL, sprites);
 			
 			}
 			else if (MAZE_1[i][j] == 7) {
 				//instantiate creep object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (7), sprites);
+				map[i][j] = new Items(TypeItems::CREEP, sprites);
 			}
 			else if (MAZE_1[i][j] == 8) {
 				//instantiate weapon object via the Items class
-				map[i][j] = new Items(static_cast<TypeItems> (8), sprites);
+				map[i][j] = new Items(TypeItems::WEAPON, sprites);
 			}
 			else {
 				//this signifies that it is an empty space for the player to move in
-				map[i][j] = NULL;
+				map[i][j] = nullptr;
 			}
 			
 	}
@@ -143,17 +143,21 @@ GameMap::GameMap(uint32_t* framebuffer) {
 	playerPos.X = 3;
 	playerPos.Y = 11;
 	map[playerPos.Y][playerPos.X] = new Player(sprites);
-	
+	Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
+
 	updateBuffer();
+
 	updateGameBar(player->getHitpoints(), player->isEquipWeapon()? player->getWeapon()->getHitpoints() : 0 , player->getCollectedItems());
 }
 
 void GameMap::movePlayer(Direction to) {
 
 
+	Player* player = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X]);
+
 	if (to == Direction::DOWN and playerPos.Y + 1 < MAP_HEIGHT) {
 
-		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
+		//if the player will move towards a empty space in the map (or null value in the map variable) and within provided space
 		if (!map[playerPos.Y + 1][playerPos.X]) {
 
 			updatePlayerDown();
@@ -365,6 +369,7 @@ void GameMap::movePlayer(Direction to) {
 
 }
 
+
 	void GameMap::attackPlayer() {
 
 		//the player will attack only one block in front of what he is facing
@@ -474,165 +479,133 @@ void GameMap::updatePlayerDown() {
 		//this will get the sprite of the object before updating
 		uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
 
-			//this will move the player in game map array
-			map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
-			map[playerPos.Y][playerPos.X] = NULL;
-			
-			//update the player postion
-			playerPos.Y = playerPos.Y + 1;
-			
-			//delete the upper portion
-			if (playerPos.Y - 3 >= 0) {
+		//this will move the player in game map array
+		map[playerPos.Y + 1][playerPos.X] = map[playerPos.Y][playerPos.X];
+		map[playerPos.Y][playerPos.X] = NULL;
 
-				for (int i = 0; i < 5; i++) {
+		//update the player postion
+		playerPos.Y = playerPos.Y + 1;
 
-					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
-						for (int k = 0; k < BLOCK_HEIGHT; k++) {
+		//delete the upper portion
+		if (playerPos.Y - 3 >= 0) {
 
-							for (int l = 0; l < BLOCK_WIDTH; l++) {
+			for (int i = 0; i < 5; i++) {
 
-								gamemapBuffer[WIDTH * ((playerPos.Y - 3) * BLOCK_WIDTH + k  + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+				if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
+					for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-							}
+						for (int l = 0; l < BLOCK_WIDTH; l++) {
+
+							gamemapBuffer[WIDTH * ((playerPos.Y - 3) * BLOCK_WIDTH + k + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+
 						}
 					}
-
-				}
-			}
-			
-			
-		}
-
-	}
-	else if (to == Direction::UP and playerPos.Y - 1 >= 0 ) {
-
-		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
-		if (!map[playerPos.Y - 1][playerPos.X]) {
-			
-			//this will get the sprite of the object before updating
-			uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
-
-			//this will move the player in game map array
-			map[playerPos.Y - 1][playerPos.X] = map[playerPos.Y][playerPos.X];
-			map[playerPos.Y][playerPos.X] = NULL;
-
-			//update the player postion
-			playerPos.Y = playerPos.Y - 1;
-			
-
-			//delete the lower portion
-			if (playerPos.Y + 3 < MAP_HEIGHT) {
-
-				for (int i = 0; i < 5; i++) {
-
-					if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
-
-						for (int k = 0; k < BLOCK_HEIGHT; k++) {
-
-							for (int l = 0; l < BLOCK_WIDTH; l++) {
-
-								gamemapBuffer[WIDTH * ((playerPos.Y + 3) * BLOCK_WIDTH + k + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
-
-							}
-						}
-					}
-
-				}
-			}
-
-			
-		}
-
-	}
-	else if (to == Direction::RIGHT and playerPos.X + 1 < MAP_WIDTH) {
-
-		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
-		if (!map[playerPos.Y][playerPos.X + 1]) {
-
-			//this will get the sprite of the object before updating
-			uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
-
-			//this will move the player in game map array
-			map[playerPos.Y][playerPos.X + 1] = map[playerPos.Y][playerPos.X];
-			map[playerPos.Y][playerPos.X] = NULL;
-
-			//update the player postion
-			playerPos.X = playerPos.X + 1;
-			
-
-			//delete the left portion
-			if (playerPos.X - 3 >= 0) {
-
-				for (int y = 0; y < 5; y++) {
-
-					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
-
-						for (int k = 0; k < BLOCK_HEIGHT; k++) {
-
-							for (int l = 0; l < BLOCK_WIDTH; l++) {
-
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X - 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
-
-							}
-						}
-					}
-
 				}
 
 			}
+		}
+}
 
+void GameMap::updatePlayerUp() {
+	//this will get the sprite of the object before updating
+	uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
+
+	//this will move the player in game map array
+	map[playerPos.Y - 1][playerPos.X] = map[playerPos.Y][playerPos.X];
+	map[playerPos.Y][playerPos.X] = NULL;
+
+	//update the player postion
+	playerPos.Y = playerPos.Y - 1;
+
+
+	//delete the lower portion
+	if (playerPos.Y + 3 < MAP_HEIGHT) {
+
+		for (int i = 0; i < 5; i++) {
+
+			if ((playerPos.X - 2 + i) < MAP_WIDTH and (playerPos.X - 2 + i) >= 0) {
+
+				for (int k = 0; k < BLOCK_HEIGHT; k++) {
+
+					for (int l = 0; l < BLOCK_WIDTH; l++) {
+
+						gamemapBuffer[WIDTH * ((playerPos.Y + 3) * BLOCK_WIDTH + k + MAP_START_Y) + (((playerPos.X - 2 + i) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+
+					}
+				}
+			}
 
 		}
-
 	}
-	else if (playerPos.X - 1 >= 0){
 
-		//for the left move
-		//the player can only move towards a empty space in the map (or null value in the map variable) and within provided space
-		if (!map[playerPos.Y][playerPos.X - 1]) {
+}
 
-			//this will get the sprite of the object before updating
-			uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
+void GameMap::updatePlayerRight() {
+	//this will get the sprite of the object before updating
+	uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
 
-			//this will move the player in game map array
-			map[playerPos.Y][playerPos.X - 1] = map[playerPos.Y][playerPos.X];
-			map[playerPos.Y][playerPos.X] = NULL;
+	//this will move the player in game map array
+	map[playerPos.Y][playerPos.X + 1] = map[playerPos.Y][playerPos.X];
+	map[playerPos.Y][playerPos.X] = NULL;
 
-			//update the player postion
-			playerPos.X = playerPos.X - 1;
-			
+	//update the player postion
+	playerPos.X = playerPos.X + 1;
 
-			//delete the rightmost part
-			if (playerPos.X + 3 >= 0) {
 
-				for (int y = 0; y < 5; y++) {
+	//delete the left portion
+	if (playerPos.X - 3 >= 0) {
 
-					if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
+		for (int y = 0; y < 5; y++) {
 
-						for (int k = 0; k < BLOCK_HEIGHT; k++) {
+			if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
 
-							for (int l = 0; l < BLOCK_WIDTH; l++) {
+				for (int k = 0; k < BLOCK_HEIGHT; k++) {
 
-								gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X + 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+					for (int l = 0; l < BLOCK_WIDTH; l++) {
 
-							}
-						}
+						gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X - 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+
 					}
-					
 				}
-
 			}
 
 		}
 
 	}
+}
 
-	//update the direction for which the player object is facing
-	dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->setNewDirectionFacing(to);
-	//update the buffer
-	//this will get the surroundings of the character (distance is 2 blocks)
-	updateBuffer();
+void GameMap::updatePlayerLeft() {
+	//this will get the sprite of the object before updating
+	uint32_t* sprite_mat = map[playerPos.Y][playerPos.X]->getSprite();
 
+	//this will move the player in game map array
+	map[playerPos.Y][playerPos.X - 1] = map[playerPos.Y][playerPos.X];
+	map[playerPos.Y][playerPos.X] = NULL;
+
+	//update the player postion
+	playerPos.X = playerPos.X - 1;
+
+
+	//delete the rightmost part
+	if (playerPos.X + 3 >= 0) {
+
+		for (int y = 0; y < 5; y++) {
+
+			if ((playerPos.Y - 2 + y) < MAP_HEIGHT and (playerPos.Y - 2 + y) >= 0) {
+
+				for (int k = 0; k < BLOCK_HEIGHT; k++) {
+
+					for (int l = 0; l < BLOCK_WIDTH; l++) {
+
+						gamemapBuffer[WIDTH * (((playerPos.Y - 2 + y) * BLOCK_WIDTH) + k + MAP_START_Y) + (((playerPos.X + 3) * BLOCK_WIDTH) + l + MAP_START_X)] = DARK;
+
+					}
+				}
+			}
+
+		}
+
+	}
 }
 
 void GameMap::updateBuffer() {
@@ -685,77 +658,12 @@ void GameMap::updateBuffer() {
 	}
 }
 
-void GameMap::attackPlayer() {
-
-	//the player will attack only one block in front of what he is facing
-	Direction currFacing = dynamic_cast<Player *>(map[playerPos.Y][playerPos.X])->getPlayerFacing();
-	int playerAD = dynamic_cast<Player*>(map[playerPos.Y][playerPos.X])->getAttackDamage();
-
-	if (currFacing == Direction::UP) {
-
-		//deal damage to the object 
-		if (map[playerPos.Y - 1][playerPos.X]) {
-			
-			map[playerPos.Y - 1][playerPos.X]->absorbDamage(playerAD);
-
-			if (map[playerPos.Y - 1][playerPos.X]->getHitpoints() <= 0)
-				delete map[playerPos.Y - 1][playerPos.X]; //this signifies that the object is destroyed
-				map[playerPos.Y - 1][playerPos.X] = NULL;
-
-		}
-	}
-	else if (currFacing == Direction::DOWN) {
-		//deal damage to the object 
-		if (map[playerPos.Y + 1][playerPos.X]) {
-
-			map[playerPos.Y + 1][playerPos.X]->absorbDamage(playerAD);
-
-			if (map[playerPos.Y + 1][playerPos.X]->getHitpoints() <= 0) {
-				delete map[playerPos.Y + 1][playerPos.X]; //this signifies that the object is destroyed
-				map[playerPos.Y + 1][playerPos.X] = NULL;
-			}
-				
-
-		}
-
-	}
-	else if (currFacing == Direction::RIGHT) {
-		//deal damage to the object 
-		if (map[playerPos.Y][playerPos.X+1]) {
-
-			map[playerPos.Y][playerPos.X+1]->absorbDamage(playerAD);
-
-			if (map[playerPos.Y][playerPos.X + 1]->getHitpoints() <= 0) {
-				delete map[playerPos.Y][playerPos.X + 1]; //this signifies that the object is destroyed
-				map[playerPos.Y][playerPos.X + 1] = NULL;
-			}
-				
-		}
-	}
-	else if (currFacing == Direction::LEFT) {
-		//deal damage to the object 
-		if (map[playerPos.Y][playerPos.X - 1]) {
-
-			map[playerPos.Y][playerPos.X - 1]->absorbDamage(playerAD);
-
-			if (map[playerPos.Y][playerPos.X - 1]->getHitpoints() <= 0) {
-				delete map[playerPos.Y][playerPos.X - 1]; //this signifies that the object is destroyed
-				map[playerPos.Y][playerPos.X - 1] = NULL;
-			}
-
-		}
-
-	}
-
-	updateBuffer();
-}
-
 void GameMap::updateGameBar(int playerHitpoints, int weaponHitpoints, std::vector<Items *> collectables) {
 	
 	//clear the gamebar part
 	memset(gamemapBuffer, LIGHT, 30 * WIDTH * sizeof(uint32_t));
 
-	std::string string_display = "health:" + std::to_string(playerHitpoints) + " weapon health:" + std::to_string(weaponHitpoints) + " items:";
+	std::string string_display = "health:" + std::to_string(playerHitpoints) + " wc:" + std::to_string(weaponHitpoints) + " items:";
 	
 	//display the PlayerHitsPoints, weapon health
 	for (int i = 0; i < string_display.length(); i++) {
