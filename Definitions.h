@@ -250,6 +250,8 @@ class GameMap
 
 		Coordinate playerPos; // this will store the position of the player in the map
 
+		int weaponNumber = 2; //number of weapons available
+
 		//this will update the buffer when the player object moves
 		//this will get the surroundings of the character (distance is 2 blocks) for the display
 		void updateBuffer();

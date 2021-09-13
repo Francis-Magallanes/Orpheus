@@ -193,6 +193,7 @@ void GameMap::movePlayer(Direction to) {
 
 						//pick up the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X]));
+						weaponNumber--;
 					}
 					//for when player pass through the creeps
 					else if (dynamic_cast<Items*>(map[playerPos.Y + 1][playerPos.X])->getType() == TypeItems::CREEP) {
@@ -208,7 +209,16 @@ void GameMap::movePlayer(Direction to) {
 				}
 				else {
 					//do something for the cerberus
+					if (player->getCollectedItems().size() == 3) {
 
+						//angels singing
+
+					}
+					else {
+
+						//noob
+
+					}
 				}
 
 			}
@@ -248,6 +258,7 @@ void GameMap::movePlayer(Direction to) {
 
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X]));
+						weaponNumber--;
 					}
 					//for when the player steps on the creep
 					else if (dynamic_cast<Items*>(map[playerPos.Y - 1][playerPos.X])->getType() == TypeItems::CREEP) {
@@ -297,6 +308,7 @@ void GameMap::movePlayer(Direction to) {
 
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1]));
+						weaponNumber--;
 					}
 					//for when the player steps on the creep
 					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X + 1])->getType() == TypeItems::CREEP) {
@@ -344,6 +356,7 @@ void GameMap::movePlayer(Direction to) {
 
 						//pickup the weapon
 						player->equipWeapon(dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1]));
+						weaponNumber--;
 					}
 					//for when the playe steps on the creep
 					else if (dynamic_cast<Items*>(map[playerPos.Y][playerPos.X - 1])->getType() == TypeItems::CREEP) {
@@ -366,6 +379,12 @@ void GameMap::movePlayer(Direction to) {
 		//update the buffer
 		//this will get the surroundings of the character (distance is 2 blocks)
 		updateBuffer();
+
+		if ((player->getHitpoints() <= 0) || (weaponNumber <= 0 && player->getWeapon()->getHitpoints() <= 0)) {
+
+			//add gitgud here
+
+		}
 
 }
 
