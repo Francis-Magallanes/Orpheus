@@ -211,12 +211,109 @@ void GameMap::movePlayer(Direction to) {
 					//do something for the cerberus
 					if (player->getCollectedItems().size() == 3) {
 
-						//angels singing
+						uint16_t xc = WIDTH / 2;
+						uint16_t yc = HEIGHT / 2;
+
+						//clear 
+						//memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
+						memset(gamemapBuffer, DARK, 30 * WIDTH * sizeof(uint32_t));
+
+						std::string string_display = "WITH THE POWER OF MUSIC";
+						std::string string_display_2 = "CERBERUS MAKES WAY";
+						std::string string_display_3 = "LEVEL COMPLETE";
+						//framebuffer[WIDTH * (yc + y + ypoint) + (xc + x + xpoint)]
+
+						for (int i = 0; i < string_display.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display.at(i) - 'a')];
+									}
+								}
+							}
+						}
+
+						for (int i = 0; i < string_display_2.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display_2.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_2.at(i) - 'a')];
+									}
+								}
+							}
+						}
+
+						for (int i = 0; i < string_display_3.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display_3.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_3.at(i) - 'a')];
+									}
+								}
+							}
+						}
 
 					}
 					else {
 
-						//noob
+						uint16_t xc = WIDTH / 2;
+						uint16_t yc = HEIGHT / 2;
+
+						//clear 
+						memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
+
+						std::string string_display = "CERBERUS STANDS GUARD";
+						std::string string_display_2 = "YOU HAVE BEEN SLAIN";
+						std::string string_display_3 = "GAME OVER";
+						//framebuffer[WIDTH * (yc + y + ypoint) + (xc + x + xpoint)]
+
+						for (int i = 0; i < string_display.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display.at(i) - 'a')];
+									}
+								}
+							}
+						}
+
+						for (int i = 0; i < string_display_2.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display_2.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_2.at(i) - 'a')];
+									}
+								}
+							}
+						}
+
+						for (int i = 0; i < string_display_3.length(); i++) {
+							for (int y = 0; y < BLOCK_HEIGHT; y++) {
+								for (int x = 0; x < BLOCK_WIDTH; x++) {
+									if (string_display_3.at(i) == ' ') {
+										gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = LIGHT;
+									}
+									else {//for the letters
+										gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_3.at(i) - 'a')];
+									}
+								}
+							}
+						}
 
 					}
 				}
@@ -380,9 +477,60 @@ void GameMap::movePlayer(Direction to) {
 		//this will get the surroundings of the character (distance is 2 blocks)
 		updateBuffer();
 
-		if ((player->getHitpoints() <= 0) || (weaponNumber <= 0 && player->getWeapon()->getHitpoints() <= 0)) {
+		if ((player->getHitpoints() <= 0) || (weaponNumber <= 0 && !player->getWeapon())) {
 
 			//add gitgud here
+			uint16_t xc = WIDTH / 2;
+			uint16_t yc = HEIGHT / 2;
+
+			//clear 
+			memset(gamemapBuffer, 0, HEIGHT * WIDTH * sizeof(uint32_t));
+
+			std::string string_display = "LIFE SLIPS AWAY FROM YOUR BODY";
+			std::string string_display_2 = "THANATOS LOOMS OVER YOU";
+			std::string string_display_3 = "GAME OVER";
+			//framebuffer[WIDTH * (yc + y + ypoint) + (xc + x + xpoint)]
+
+			for (int i = 0; i < string_display.length(); i++) {
+				for (int y = 0; y < BLOCK_HEIGHT; y++) {
+					for (int x = 0; x < BLOCK_WIDTH; x++) {
+						if (string_display.at(i) == ' ') {
+							gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = LIGHT;
+						}
+						else {//for the letters
+							gamemapBuffer[WIDTH * (yc + y - 50) + (xc + x - 350) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display.at(i) - 'a')];
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < string_display_2.length(); i++) {
+				for (int y = 0; y < BLOCK_HEIGHT; y++) {
+					for (int x = 0; x < BLOCK_WIDTH; x++) {
+						if (string_display_2.at(i) == ' ') {
+							gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = LIGHT;
+						}
+						else {//for the letters
+							gamemapBuffer[WIDTH * (yc + y - 15) + (xc + x - 250) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_2.at(i) - 'a')];
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < string_display_3.length(); i++) {
+				for (int y = 0; y < BLOCK_HEIGHT; y++) {
+					for (int x = 0; x < BLOCK_WIDTH; x++) {
+						if (string_display_3.at(i) == ' ') {
+							gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = LIGHT;
+						}
+						else {//for the letters
+							gamemapBuffer[WIDTH * (yc + y + 100) + (xc + x - 200) + (BLOCK_WIDTH * i)] = sprites_alphanum[(BLOCK_WIDTH * NUMBER_SPRITES_ALPHANUM) * y + x + BLOCK_WIDTH * (5 + string_display_3.at(i) - 'a')];
+						}
+					}
+				}
+			}
+
+			
 
 		}
 
