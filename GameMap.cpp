@@ -477,7 +477,7 @@ void GameMap::movePlayer(Direction to) {
 		//this will get the surroundings of the character (distance is 2 blocks)
 		updateBuffer();
 
-		if ((player->getHitpoints() <= 0) || (weaponNumber <= 0 && player->getWeapon()->getHitpoints() <= 0)) {
+		if ((player->getHitpoints() <= 0) || (weaponNumber <= 0 && !player->getWeapon())) {
 
 			//add gitgud here
 			uint16_t xc = WIDTH / 2;
